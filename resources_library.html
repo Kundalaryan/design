@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cheat Sheets & Resources — AISafe</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Sora:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            /* Colors */
+            --bg-base: #0A0A0F;
+            --bg-surface: #13131A;
+            /* Slightly warmer than admin */
+            --bg-elevated: #1C1C26;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-default: rgba(255, 255, 255, 0.12);
+            --border-strong: rgba(255, 255, 255, 0.25);
+
+            --text-primary: #F4F4F5;
+            --text-secondary: #A1A1AA;
+            --text-muted: #52525B;
+
+            --accent-blue: #3B82F6;
+            --accent-blue-tint: rgba(59, 130, 246, 0.12);
+            --accent-green: #10B981;
+            --accent-amber: #F59E0B;
+            --accent-red: #EF4444;
+
+            /* Typography */
+            --font-display: 'Sora', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            /* Spacing & Radii */
+            --rad-base: 8px;
+            --rad-card: 16px;
+            --rad-pill: 9999px;
+
+            /* Shadow */
+            --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.4);
+            --shadow-hover: 0 16px 40px rgba(0, 0, 0, 0.6);
+
+            /* Motion */
+            --ease-fast: 150ms ease;
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 15px;
+            line-height: 1.5;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: var(--font-display);
+            font-weight: 600;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            transition: all var(--ease-fast);
+        }
+
+        input {
+            font-family: inherit;
+            background: transparent;
+            border: none;
+            color: inherit;
+            outline: none;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .flex-col {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .gap-4 {
+            gap: 4px;
+        }
+
+        .gap-8 {
+            gap: 8px;
+        }
+
+        .gap-12 {
+            gap: 12px;
+        }
+
+        .gap-16 {
+            gap: 16px;
+        }
+
+        .gap-24 {
+            gap: 24px;
+        }
+
+        .text-muted {
+            color: var(--text-muted);
+        }
+
+        .text-secondary {
+            color: var(--text-secondary);
+        }
+
+        /* Helpers */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 32px;
+            width: 100%;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            padding: 4px 12px;
+            border-radius: var(--rad-pill);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .badge-blue {
+            background: var(--accent-blue-tint);
+            color: var(--accent-blue);
+        }
+
+        .badge-green {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-green);
+        }
+
+        .badge-amber {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--accent-amber);
+        }
+
+        .badge-ghost {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-default);
+            color: var(--text-secondary);
+        }
+
+        .badge-update {
+            background: var(--accent-amber);
+            color: #000;
+            font-size: 10px;
+            padding: 2px 6px;
+            letter-spacing: normal;
+        }
+
+        /* Icon Buttons */
+        .icn-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            border: 1px solid transparent;
+            background: transparent;
+        }
+
+        .icn-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            border-color: var(--border-default);
+        }
+
+        /* ================= HEADER & NAVIGATION ================= */
+        .main-header {
+            padding: 48px 0 32px;
+            border-bottom: 1px solid var(--border-subtle);
+            background: var(--bg-base);
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 32px;
+        }
+
+        .search-container {
+            position: relative;
+            width: 320px;
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-default);
+            border-radius: var(--rad-pill);
+            padding: 12px 20px 12px 48px;
+            font-size: 15px;
+            color: white;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-blue);
+            background: var(--bg-elevated);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .tabs-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 32px;
+            padding-bottom: 2px;
+        }
+
+        .tabs-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-item {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 16px;
+            white-space: nowrap;
+            padding-bottom: 12px;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-item:hover:not(.active) {
+            color: var(--text-primary);
+        }
+
+        .tab-item.active {
+            color: var(--accent-blue);
+            border-bottom-color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .tab-count {
+            font-size: 13px;
+            opacity: 0.6;
+            font-weight: 400;
+            margin-left: 4px;
+        }
+
+        /* ================= RESOURCE GRID ================= */
+        .workspace {
+            padding: 48px 0;
+            min-height: 60vh;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 32px;
+        }
+
+        /* Card Shared */
+        .res-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--rad-card);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: var(--shadow-card);
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+        }
+
+        .res-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--border-strong);
+        }
+
+        .card-header {
+            padding: 24px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            margin-top: 16px;
+            line-height: 1.3;
+        }
+
+        .card-body {
+            padding: 0 24px 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        /* Card Specific Tints */
+        .card-type-prompt {
+            background: linear-gradient(to bottom right, var(--bg-surface), rgba(59, 130, 246, 0.05));
+        }
+
+        .card-type-dodont {
+            background: linear-gradient(to bottom right, var(--bg-surface), rgba(245, 158, 11, 0.05));
+        }
+
+        .card-type-check {
+            background: linear-gradient(to bottom right, var(--bg-surface), rgba(16, 185, 129, 0.05));
+        }
+
+        /* Visual Previews */
+        .preview-box {
+            border: 1px solid var(--border-default);
+            border-radius: 8px;
+            overflow: hidden;
+            height: 120px;
+            position: relative;
+        }
+
+        /* Prompt Preview */
+        .preview-prompt {
+            background: var(--bg-base);
+            padding: 16px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .preview-fade {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(to top, var(--bg-base), transparent);
+        }
+
+        /* Checkbox Preview */
+        .preview-check {
+            background: var(--bg-elevated);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .cb-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        .cb-box {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+            border: 1px solid var(--border-strong);
+            flex-shrink: 0;
+        }
+
+        .cb-box.done {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+            position: relative;
+        }
+
+        .cb-box.done::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 10px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Do/Dont Preview */
+        .preview-dd {
+            display: flex;
+            height: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .dd-half {
+            flex: 1;
+            padding: 12px;
+            font-size: 12px;
+        }
+
+        .dd-half.do {
+            background: rgba(16, 185, 129, 0.1);
+            border-right: 1px solid var(--border-subtle);
+        }
+
+        .dd-half.dont {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .dd-item {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            align-items: flex-start;
+        }
+
+        /* Bookmark Interaction */
+        .btn-bookmark {
+            color: var(--text-muted);
+            transition: color 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .btn-bookmark:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-bookmark svg {
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .btn-bookmark.active {
+            color: var(--accent-amber);
+        }
+
+        .btn-bookmark.active svg {
+            fill: var(--accent-amber);
+            transform: scale(1.1);
+        }
+
+        .anim-pop {
+            animation: pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes pop {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.3);
+            }
+
+            100% {
+                transform: scale(1.1);
+            }
+        }
+
+        /* ================= MODAL PREVIEW ================= */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 10, 15, 0.92);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .res-modal {
+            width: 100%;
+            max-width: 800px;
+            background: var(--bg-surface);
+            border-radius: 16px;
+            border: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            max-height: 85vh;
+            transform: scale(0.95);
+            transition: transform 0.25s var(--ease-spring);
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+        }
+
+        .modal-overlay.active .res-modal {
+            transform: scale(1);
+        }
+
+        .rm-top {
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .rm-header-left {
+            flex: 1;
+            margin-right: 24px;
+        }
+
+        .rm-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn-solid-blue {
+            background: var(--accent-blue);
+            color: white;
+            height: 40px;
+            padding: 0 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-solid-blue:hover {
+            background: var(--accent-blue-hover);
+        }
+
+        .rm-body {
+            padding: 40px;
+            overflow-y: auto;
+            flex: 1;
+            background: var(--bg-base);
+        }
+
+        /* Modal Template: Do/Dont full view */
+        .modal-dd-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .m-dd-col {
+            border-radius: 12px;
+            padding: 32px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .m-dd-col h3 {
+            font-size: 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .m-dd-col.do {
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .m-dd-col.do h3 {
+            color: var(--accent-green);
+        }
+
+        .m-dd-col.dont {
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .m-dd-col.dont h3 {
+            color: var(--accent-red);
+        }
+
+        .m-dd-item {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            align-items: flex-start;
+        }
+
+        .m-dd-item svg {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .m-dd-text {
+            font-size: 16px;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .rm-footer {
+            padding: 24px 40px;
+            border-top: 1px solid var(--border-subtle);
+            background: var(--bg-surface);
+        }
+
+        .rm-related {
+            display: flex;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .rm-rel-card {
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-default);
+            background: var(--bg-elevated);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .rm-rel-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--accent-blue);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-top">
+                <div>
+                    <h1 style="font-size: 28px; margin-bottom: 8px;">Cheat Sheets & Resources</h1>
+                    <p class="text-secondary" style="font-size: 16px;">Your personal AI safety reference library.</p>
+                </div>
+
+                <div class="flex items-center gap-16">
+                    <div class="search-container">
+                        <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input type="text" class="search-input" placeholder="Search resources...">
+                    </div>
+                    <button class="badge-ghost"
+                        style="height: 44px; font-size: 14px; font-weight: 500; text-transform:none; padding: 0 16px; gap: 8px; border-radius: var(--rad-base); display:flex; align-items:center;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                        </svg> Filter
+                    </button>
+                    <div class="flex gap-4"
+                        style="background: var(--bg-surface); border: 1px solid var(--border-default); padding: 4px; border-radius: var(--rad-base);">
+                        <button class="icn-btn" style="background: rgba(255,255,255,0.1); color: white;"><svg
+                                viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="3" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="14" width="7" height="7"></rect>
+                                <rect x="3" y="14" width="7" height="7"></rect>
+                            </svg></button>
+                        <button class="icn-btn"><svg viewBox="0 0 24 24" width="18" height="18" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <line x1="8" y1="6" x2="21" y2="6"></line>
+                                <line x1="8" y1="12" x2="21" y2="12"></line>
+                                <line x1="8" y1="18" x2="21" y2="18"></line>
+                                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                            </svg></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tabs-container">
+                <div class="tab-item active">All <span class="tab-count">(34)</span></div>
+                <div class="tab-item">Prompt Templates <span class="tab-count">(8)</span></div>
+                <div class="tab-item">Do/Don't Cards <span class="tab-count">(12)</span></div>
+                <div class="tab-item">Checklists <span class="tab-count">(7)</span></div>
+                <div class="tab-item">Redaction Examples <span class="tab-count">(5)</span></div>
+                <div class="tab-item">Policy Summaries <span class="tab-count">(2)</span></div>
+                <!-- Pushed to right for Bookmarks -->
+                <div class="tab-item" style="margin-left: auto; display:flex; align-items:center; gap:8px;">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" stroke="none">
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                    </svg> Saved Bookmarks
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENT GRID -->
+    <main class="workspace container" id="main-grid">
+        <div class="grid-container">
+
+            <!-- CARD 1: Do/Don't -->
+            <div class="res-card card-type-dodont" onclick="openModal()">
+                <div class="card-header">
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-center gap-8">
+                            <span class="badge badge-amber">Do / Don't</span>
+                            <span class="badge badge-ghost">Engineering</span>
+                        </div>
+                        <span class="badge badge-update">UPDATED</span>
+                    </div>
+                    <h2 class="card-title">AI Tool Usage Rules</h2>
+                </div>
+                <div class="card-body">
+                    <div class="preview-box preview-dd">
+                        <div class="dd-half do">
+                            <div class="dd-item"><svg viewBox="0 0 24 24" width="12" height="12"
+                                    stroke="var(--accent-green)" stroke-width="3" fill="none">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg> Use internal instances</div>
+                            <div class="dd-item"><svg viewBox="0 0 24 24" width="12" height="12"
+                                    stroke="var(--accent-green)" stroke-width="3" fill="none">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg> Obfuscate PII data</div>
+                        </div>
+                        <div class="dd-half dont">
+                            <div class="dd-item"><svg viewBox="0 0 24 24" width="12" height="12"
+                                    stroke="var(--accent-red)" stroke-width="3" fill="none">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg> Paste source code</div>
+                            <div class="dd-item"><svg viewBox="0 0 24 24" width="12" height="12"
+                                    stroke="var(--accent-red)" stroke-width="3" fill="none">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg> Summarize financials</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer" onclick="event.stopPropagation();">
+                    <div class="font-mono text-muted" style="font-size: 12px;">Mar 2026</div>
+                    <div class="flex gap-4">
+                        <button class="btn-bookmark" onclick="toggleBookmark(this)">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </button>
+                        <button class="icn-btn"><svg viewBox="0 0 24 24" width="18" height="18" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 2: Prompt Template -->
+            <div class="res-card card-type-prompt">
+                <div class="card-header">
+                    <div class="flex gap-8">
+                        <span class="badge badge-blue">Prompt Template</span>
+                        <span class="badge badge-ghost">Analysis</span>
+                    </div>
+                    <h2 class="card-title">Safe Data Analysis Wrapper</h2>
+                </div>
+                <div class="card-body">
+                    <div class="preview-box">
+                        <div class="preview-prompt">
+                            You are a senior data analyst. I will provide you with a JSON structure containing
+                            obfuscated datasets. [DATA]. Provide an executive summary of trends. Do not summarize
+                            row-level events. Output format should be...
+                        </div>
+                        <div class="preview-fade"></div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="font-mono text-muted" style="font-size: 12px;">Jan 2026</div>
+                    <div class="flex gap-4">
+                        <button class="btn-bookmark" onclick="toggleBookmark(this)">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </button>
+                        <button class="icn-btn"><svg viewBox="0 0 24 24" width="18" height="18" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 3: Checklist -->
+            <div class="res-card card-type-check">
+                <div class="card-header">
+                    <div class="flex gap-8">
+                        <span class="badge badge-green">Verification Checklist</span>
+                        <span class="badge badge-ghost">Review</span>
+                    </div>
+                    <h2 class="card-title">Pre-Submit Review Output</h2>
+                </div>
+                <div class="card-body">
+                    <div class="preview-box preview-check">
+                        <div class="cb-row">
+                            <div class="cb-box done"></div> Checked for implicit bias
+                        </div>
+                        <div class="cb-row">
+                            <div class="cb-box done"></div> Verified factual numbers
+                        </div>
+                        <div class="cb-row">
+                            <div class="cb-box"></div> Removed hallucinatory links
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="font-mono text-muted" style="font-size: 12px;">Nov 2025</div>
+                    <div class="flex gap-4">
+                        <button class="btn-bookmark active" onclick="toggleBookmark(this)">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </button>
+                        <button class="icn-btn"><svg viewBox="0 0 24 24" width="18" height="18" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cards 4-6 duplicated for visual grid fill -->
+            <div class="res-card card-type-prompt">
+                <div class="card-header">
+                    <div class="flex gap-8"><span class="badge badge-blue">Prompt Template</span></div>
+                    <h2 class="card-title">Neutral Code Refactoring</h2>
+                </div>
+                <div class="card-body">
+                    <div class="preview-box">
+                        <div class="preview-prompt">Refactor the following logic loop for Big O complexity O(n).
+                            Maintain existing variable styles but do not print comments. Context independent. Code:
+                            [CODE]</div>
+                        <div class="preview-fade"></div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="font-mono text-muted" style="font-size: 12px;">Feb 2026</div>
+                    <div class="flex gap-4">
+                        <button class="btn-bookmark" onclick="toggleBookmark(this)"><svg viewBox="0 0 24 24" width="20"
+                                height="20" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                            </svg></button>
+                        <button class="icn-btn"><svg viewBox="0 0 24 24" width="18" height="18" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="res-card card-type-dodont">
+                <div class="card-header">
+                    <div class="flex gap-8"><span class="badge badge-amber">Do / Don't</span><span
+                            class="badge badge-ghost">HR</span></div>
+                    <h2 class="card-title">Recruitment Screening</h2>
+                </div>
+                <div class="card-body">
+                    <div class="preview-box preview-dd">
+                        <div class="dd-half do">
+                            <div class="dd-item"><svg viewBox="0 0 24 24" width="12" height="12"
+                                    stroke="var(--accent-green)" stroke-width="3" fill="none">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg> Extract skills list</div>
+                        </div>
+                        <div class="dd-half dont">
+                            <div class="dd-item"><svg viewBox="0 0 24 24" width="12" height="12"
+                                    stroke="var(--accent-red)" stroke-width="3" fill="none">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg> Score candidate fit</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="font-mono text-muted" style="font-size: 12px;">Mar 2026</div>
+                    <div class="flex gap-4">
+                        <button class="btn-bookmark" onclick="toggleBookmark(this)"><svg viewBox="0 0 24 24" width="20"
+                                height="20" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                            </svg></button>
+                        <button class="icn-btn"><svg viewBox="0 0 24 24" width="18" height="18" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg></button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- FULL SCREEN PREVIEW MODAL -->
+    <div class="modal-overlay" id="preview-modal" onclick="closeModal(event)">
+        <div class="res-modal" id="modal-content">
+
+            <div class="rm-top">
+                <div class="rm-header-left">
+                    <div class="flex items-center gap-12 mb-16" style="margin-bottom: 12px;">
+                        <span class="badge badge-amber">Do / Don't</span>
+                        <span class="badge badge-ghost">Engineering Division</span>
+                        <span class="badge badge-update">UPDATED MAR 5</span>
+                    </div>
+                    <h1 style="font-size: 28px; line-height: 1.2;">AI Tool Usage Rules — Engineering</h1>
+                    <p class="text-secondary" style="margin-top: 8px;">Quick reference boundaries for using Large
+                        Language Models while coding, debugging, or reviewing architecture.</p>
+                </div>
+                <div class="rm-actions">
+                    <button class="btn-solid-blue">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Download PDF
+                    </button>
+                    <button class="icn-btn" onclick="closeModal(null, true)"><svg viewBox="0 0 24 24" width="24"
+                            height="24" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg></button>
+                </div>
+            </div>
+
+            <div class="rm-body">
+                <div class="modal-dd-split">
+                    <!-- DO column -->
+                    <div class="m-dd-col do">
+                        <h3><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> DO this</h3>
+
+                        <div class="m-dd-item">
+                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="var(--accent-green)"
+                                stroke-width="3" fill="none">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <div class="m-dd-text"><strong>Use Acme Corp Enterprise LLM instances</strong> for any
+                                queries related to internal architecture or logic. These instances are zero-retention.
+                            </div>
+                        </div>
+                        <div class="m-dd-item">
+                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="var(--accent-green)"
+                                stroke-width="3" fill="none">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <div class="m-dd-text"><strong>Obfuscate code before pasting</strong> into external consumer
+                                tools (like standard ChatGPT). Rename specific variable names to generic
+                                <code>var_a</code>, <code>function_b()</code>.</div>
+                        </div>
+                        <div class="m-dd-item">
+                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="var(--accent-green)"
+                                stroke-width="3" fill="none">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <div class="m-dd-text"><strong>Rigorously test AI-generated code snippets</strong>. Treat
+                                LLM output like code from a junior intern. Run unit and integration tests before
+                                committing.</div>
+                        </div>
+                    </div>
+
+                    <!-- DONT column -->
+                    <div class="m-dd-col dont">
+                        <h3><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg> NEVER do this</h3>
+
+                        <div class="m-dd-item">
+                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="var(--accent-red)" stroke-width="3"
+                                fill="none">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                            <div class="m-dd-text"><strong>Paste proprietary source code</strong> containing core trade
+                                algorithms or API keys into public AI models to "check for bugs".</div>
+                        </div>
+                        <div class="m-dd-item">
+                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="var(--accent-red)" stroke-width="3"
+                                fill="none">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                            <div class="m-dd-text"><strong>Ask an LLM to evaluate third-party library security</strong>.
+                                Models often hallucinate package safety. Always use Snyk or Checkmarx.</div>
+                        </div>
+                        <div class="m-dd-item">
+                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="var(--accent-red)" stroke-width="3"
+                                fill="none">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                            <div class="m-dd-text"><strong>Upload entire stack traces</strong> containing user IDs or
+                                server IPs. Scrub logs locally before seeking assistance.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rm-footer">
+                <h4 style="font-size: 14px; color: var(--text-muted); text-transform: uppercase;">Related Resources</h4>
+                <div class="rm-related">
+                    <div class="rm-rel-card">Code Obfuscation Checklist</div>
+                    <div class="rm-rel-card">Prompt Template: Refactoring</div>
+                    <div class="rm-rel-card">Security Incident Procedure</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        // Bookmark toggle with pop animation
+        function toggleBookmark(btn) {
+            btn.classList.toggle('active');
+
+            // Replay animation
+            btn.classList.remove('anim-pop');
+            void btn.offsetWidth; // trigger reflow
+            btn.classList.add('anim-pop');
+
+            // Swap filled/empty state visually if using SVG
+            const svg = btn.querySelector('svg');
+            if (btn.classList.contains('active')) {
+                svg.setAttribute('fill', 'currentColor');
+            } else {
+                svg.setAttribute('fill', 'none');
+            }
+        }
+
+        // Modal Logic
+        const modalOverlay = document.getElementById('preview-modal');
+        const modalContent = document.getElementById('modal-content');
+
+        function openModal() {
+            modalOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function closeModal(event, force = false) {
+            // Only close if clicking the backdrop or the close button specifically
+            if (force || event.target === modalOverlay) {
+                modalOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Escape key to close
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+                closeModal(null, true);
+            }
+        });
+
+        // Demo only: Pre-open modal
+        setTimeout(() => { openModal() }, 500);
+
+    </script>
+</body>
+
+</html>

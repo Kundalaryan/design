@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AISafe — Enterprise AI Training Platform</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Colors */
+            --bg-primary: #0A0A0F;
+            --bg-surface: #111118;
+            --bg-elevated: #18181F;
+            --border-subtle: rgba(255,255,255,0.06);
+            --border-default: rgba(255,255,255,0.10);
+            --text-primary: #F4F4F5;
+            --text-secondary: #A1A1AA;
+            --text-muted: #52525B;
+            --accent-blue: #3B82F6;
+            --accent-blue-hover: #2563EB;
+            --accent-green: #10B981;
+            --accent-amber: #F59E0B;
+            --accent-red: #EF4444;
+            --gradient-hero: linear-gradient(135deg, #1e3a5f 0%, #0A0A0F 60%);
+            
+            /* Typography */
+            --font-display: 'Sora', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            
+            /* Spacing (4px base) */
+            --sp-8: 8px;
+            --sp-12: 12px;
+            --sp-16: 16px;
+            --sp-24: 24px;
+            --sp-32: 32px;
+            --sp-48: 48px;
+            --sp-64: 64px;
+            --sp-96: 96px;
+
+            /* Radii */
+            --rad-base: 8px;
+            --rad-card: 12px;
+            --rad-modal: 16px;
+            --rad-pill: 9999px;
+
+            /* Shadows */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.6);
+            --shadow-glow: 0 0 16px rgba(59, 130, 246, 0.4);
+            
+            /* Motion */
+            --ease-fast: 200ms ease;
+            --ease-slow: 350ms ease-out;
+        }
+
+        /* ===== RESET & BASE ===== */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 16px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: color var(--ease-fast);
+        }
+        button, a.button {
+            cursor: pointer;
+            font-family: var(--font-body);
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: var(--rad-base);
+            transition: all var(--ease-fast);
+            padding: 0 var(--sp-24);
+        }
+        ol, ul { list-style: none; }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--sp-24);
+            width: 100%;
+        }
+
+        /* Utilities */
+        .text-blue { color: var(--accent-blue); }
+        .text-muted { color: var(--text-secondary); }
+        .mb-16 { margin-bottom: var(--sp-16); }
+        .mb-32 { margin-bottom: var(--sp-32); }
+        .mb-64 { margin-bottom: var(--sp-64); }
+        
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--accent-blue);
+            color: white;
+            height: 48px;
+            font-weight: 600;
+            border-radius: var(--rad-base);
+        }
+        .btn-primary:hover {
+            background-color: var(--accent-blue-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-glow);
+        }
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-primary);
+            height: 48px;
+            border: 1px solid transparent;
+        }
+        .btn-ghost:hover {
+            color: var(--accent-blue);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--text-primary);
+            height: 48px;
+            border: 1px solid var(--border-default);
+            border-radius: var(--rad-base);
+        }
+        .btn-outline:hover {
+            border-color: var(--text-primary);
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 80px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            transition: background var(--ease-slow), backdrop-filter var(--ease-slow);
+        }
+        .navbar.nav-scrolled {
+            background-color: rgba(10, 10, 15, 0.85); /* #0A0A0F */
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        .nav-logo {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-logo svg {
+            width: 24px; height: 24px;
+            color: var(--accent-blue);
+        }
+        .nav-links {
+            display: flex;
+            gap: var(--sp-32);
+        }
+        .nav-links a {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+        .nav-actions {
+            display: flex;
+            gap: var(--sp-12);
+        }
+        .hamburger {
+            display: none;
+            background: none; border: none; color: white; cursor: pointer;
+        }
+        
+        /* ===== HERO SECTION ===== */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: var(--gradient-hero);
+            overflow: hidden;
+            padding-top: 80px;
+        }
+        .hero-bg-dots {
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(255,255,255,0.05) 1.5px, transparent 1.5px);
+            background-size: 32px 32px;
+            animation: drift 60s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes drift {
+            from { background-position: 0 0; }
+            to { background-position: 640px 640px; }
+        }
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--sp-64);
+            align-items: center;
+            z-index: 10;
+            position: relative;
+        }
+        .hero-text .eyebrow {
+            font-family: var(--font-mono);
+            color: var(--accent-blue);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: var(--sp-24);
+            display: block;
+        }
+        .hero-text h1 {
+            font-size: clamp(40px, 5vw, 64px);
+            letter-spacing: -0.02em;
+            margin-bottom: var(--sp-24);
+        }
+        .hero-text p {
+            font-size: 20px;
+            color: var(--text-secondary);
+            margin-bottom: var(--sp-48);
+            max-width: 90%;
+            line-height: 1.6;
+        }
+        .hero-actions {
+            display: flex;
+            gap: var(--sp-16);
+            margin-bottom: var(--sp-64);
+        }
+        .social-proof {
+            display: flex;
+            align-items: center;
+            gap: var(--sp-16);
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        .social-proof-logos {
+            display: flex;
+            gap: var(--sp-16);
+        }
+        .logo-rect {
+            width: 80px; height: 24px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+            filter: blur(1px);
+        }
+        
+        .hero-visual {
+            position: relative;
+            height: 500px;
+            perspective: 1000px;
+        }
+        .dashboard-mockup {
+            position: absolute;
+            right: -10%; top: 50%;
+            transform: translateY(-50%) rotateY(-15deg) rotateX(5deg);
+            width: 600px;
+            animation: float 6s ease-in-out infinite alternate;
+        }
+        @keyframes float {
+            from { transform: translateY(-50%) rotateY(-15deg) rotateX(5deg); }
+            to   { transform: translateY(-55%) rotateY(-15deg) rotateX(5deg); }
+        }
+        .mockup-card {
+            background: rgba(17, 17, 24, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-default);
+            border-radius: var(--rad-modal);
+            padding: var(--sp-24);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            z-index: 2;
+        }
+        .mockup-card:nth-child(2) {
+            position: absolute;
+            bottom: -40px; left: -60px;
+            width: 320px;
+            z-index: 3;
+        }
+        .mockup-bar {
+            height: 8px; background: var(--bg-primary); border-radius: 4px; overflow: hidden; margin-top: 16px;
+        }
+        .mockup-fill { height: 100%; background: var(--accent-blue); width: 92%; }
+        .mockup-header { display: flex; justify-content: space-between; align-items: center; font-family: var(--font-display); }
+
+        /* ===== COMMON SECTION ===== */
+        section { padding: 120px 0; }
+        .section-header { text-align: center; margin-bottom: var(--sp-64); }
+        .section-header h2 { font-size: 40px; margin-bottom: var(--sp-16); }
+        .section-header p { color: var(--text-secondary); font-size: 20px; }
+
+        /* ===== THE PROBLEM ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--sp-24);
+        }
+        .stat-card {
+            background: var(--bg-surface);
+            border-left: 4px solid var(--accent-blue);
+            padding: var(--sp-32);
+            border-radius: 0 var(--rad-card) var(--rad-card) 0;
+            box-shadow: var(--shadow-sm);
+            transition: transform var(--ease-fast);
+        }
+        .stat-card:hover { transform: translateY(-4px); }
+        .stat-number {
+            font-family: var(--font-display);
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin-bottom: var(--sp-16);
+        }
+        .stat-desc {
+            color: var(--text-secondary);
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        /* ===== HOW IT WORKS ===== */
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--sp-48);
+            position: relative;
+        }
+        .path-line {
+            position: absolute;
+            top: 32px;
+            left: 10%;
+            width: 80%;
+            height: 2px;
+            background-image: linear-gradient(to right, var(--text-muted) 50%, transparent 50%);
+            background-size: 16px 2px;
+            background-repeat: repeat-x;
+            z-index: 0;
+        }
+        .step-card {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            background: var(--bg-primary);
+            padding: var(--sp-24);
+            border-radius: var(--rad-card);
+            transition: transform var(--ease-fast);
+        }
+        .step-card:hover {
+            transform: translateY(-4px);
+        }
+        .step-card:hover .step-num {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+        .step-num {
+            width: 64px; height: 64px;
+            border-radius: 50%;
+            background: var(--bg-elevated);
+            border: 2px solid var(--border-default);
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0 auto var(--sp-24);
+            transition: all var(--ease-fast);
+        }
+        .step-title {
+            font-family: var(--font-display);
+            font-size: 20px; margin-bottom: var(--sp-8);
+        }
+        .step-desc { color: var(--text-secondary); font-size: 15px; }
+
+        /* ===== DEPARTMENT TRACKS ===== */
+        .dept-pills {
+            display: flex; gap: var(--sp-12); flex-wrap: wrap; justify-content: center;
+            margin-bottom: var(--sp-48);
+        }
+        .pill {
+            padding: 8px 16px; border-radius: var(--rad-pill);
+            border: 1px solid var(--border-default);
+            background: transparent; color: var(--text-primary);
+            font-family: var(--font-body); font-weight: 500; cursor: pointer;
+            transition: all var(--ease-fast);
+        }
+        .pill.active {
+            background: var(--accent-blue); border-color: var(--accent-blue);
+        }
+        .pill:hover:not(.active) {
+            border-color: var(--text-secondary); background: rgba(255,255,255,0.05);
+        }
+        .dept-content {
+            background: var(--bg-surface);
+            border-radius: var(--rad-modal);
+            padding: var(--sp-48);
+            border: 1px solid var(--border-default);
+            min-height: 240px;
+            transition: opacity var(--ease-slow), transform var(--ease-slow);
+        }
+        .dept-grid {
+            display: grid; grid-template-columns: 1.5fr 1fr; gap: var(--sp-48);
+        }
+        .dept-title { font-size: 24px; font-family: var(--font-display); margin-bottom: var(--sp-16); }
+        .dept-topics { color: var(--text-secondary); margin-bottom: var(--sp-24); padding-left: 20px; line-height: 1.8; }
+        .dept-quote {
+            font-style: italic; color: var(--text-primary); background: var(--bg-elevated);
+            padding: var(--sp-24); border-radius: var(--rad-card); border-left: 2px solid var(--accent-blue);
+        }
+
+        /* ===== FEATURE BENTO GRID ===== */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-auto-rows: minmax(240px, auto);
+            gap: var(--sp-24);
+        }
+        .bento-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-default);
+            border-radius: var(--rad-card);
+            padding: var(--sp-32);
+            transition: var(--ease-fast);
+            display: flex; flex-direction: column; justify-content: space-between;
+            overflow: hidden; position: relative;
+        }
+        .bento-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        .bento-large { grid-column: span 2; }
+        .bento-icon { width: 32px; height: 32px; color: var(--accent-blue); margin-bottom: var(--sp-16); }
+        .bento-title { font-family: var(--font-display); font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+        .bento-desc { color: var(--text-secondary); }
+
+        /* ===== TESTIMONIALS ===== */
+        .reviews-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-32);
+        }
+        .review-card {
+            background: var(--bg-surface); padding: var(--sp-32); border-radius: var(--rad-modal);
+            border: 1px solid var(--border-subtle);
+        }
+        .review-card:nth-child(1) { transform: rotate(-1deg); }
+        .review-card:nth-child(2) { transform: rotate(0deg); }
+        .review-card:nth-child(3) { transform: rotate(1deg); }
+        .quote { font-size: 18px; line-height: 1.6; margin-bottom: var(--sp-24); color: var(--text-primary); }
+        .author-name { font-weight: 600; font-family: var(--font-display); }
+        .author-title { font-size: 14px; color: var(--text-secondary); }
+
+        /* ===== PRICING ===== */
+        .pricing-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-24);
+            align-items: center;
+        }
+        .pricing-card {
+            background: var(--bg-surface); padding: var(--sp-48) var(--sp-32); border-radius: var(--rad-modal);
+            border: 1px solid var(--border-default); position: relative;
+        }
+        .pricing-card.popular {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 24px rgba(59,130,246,0.15);
+            background: linear-gradient(180deg, rgba(59,130,246,0.05) 0%, transparent 100%);
+            transform: scale(1.05);
+            z-index: 2;
+        }
+        .badge-popular {
+            position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+            background: var(--accent-blue); color: white; padding: 4px 12px; border-radius: var(--rad-pill);
+            font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+        }
+        .plan-name { font-family: var(--font-display); font-size: 24px; margin-bottom: 8px; }
+        .plan-desc { color: var(--text-secondary); font-size: 14px; margin-bottom: var(--sp-32); min-height: 42px;}
+        .price { font-size: 48px; font-weight: 700; font-family: var(--font-display); margin-bottom: var(--sp-32); }
+        .price span { font-size: 16px; color: var(--text-secondary); font-weight: 400; font-family: var(--font-body);}
+        .features-list { margin-bottom: var(--sp-32); }
+        .features-list li {
+            display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; color: var(--text-secondary);
+        }
+        .features-list svg { width: 18px; height: 18px; color: var(--accent-blue); flex-shrink: 0; margin-top: 3px;}
+
+        /* ===== FINAL CTA ===== */
+        .final-cta {
+            background: var(--gradient-hero);
+            padding: 96px 0; border-top: 1px solid var(--border-subtle); text-align: center;
+        }
+        .final-cta h2 { font-size: 48px; margin-bottom: var(--sp-32); }
+
+        /* ===== FOOTER ===== */
+        footer {
+            border-top: 1px solid var(--border-default); padding: 80px 0 40px; background: var(--bg-primary);
+        }
+        .footer-grid {
+            display: grid; grid-template-columns: 2fr repeat(4, 1fr); gap: var(--sp-48); margin-bottom: var(--sp-64);
+        }
+        .footer-logo { font-family: var(--font-display); font-size: 24px; font-weight: 700; margin-bottom: 16px; }
+        .footer-col h4 { font-family: var(--font-display); margin-bottom: var(--sp-24); font-size: 16px; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul a { color: var(--text-secondary); font-size: 15px; }
+        .footer-col ul a:hover { color: white; }
+        .footer-bottom {
+            display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: var(--sp-32);
+        }
+        .trust-badges { display: flex; gap: var(--sp-24); color: var(--text-muted); font-size: 14px; }
+
+        /* Media Queries */
+        @media (max-width: 900px) {
+            .hero-content { grid-template-columns: 1fr; text-align: center; }
+            .hero-actions { justify-content: center; }
+            .social-proof { justify-content: center; }
+            .hero-visual { display: none; }
+            .stats-grid, .steps-container, .bento-grid, .reviews-grid, .pricing-grid { grid-template-columns: 1fr; }
+            .path-line { display: none; }
+            .dept-grid { grid-template-columns: 1fr; }
+            .pricing-card.popular { transform: none; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .nav-links, .nav-actions .btn-ghost { display: none; }
+            .hamburger { display: block; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-content">
+            <a href="#" class="nav-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                AISafe
+            </a>
+            <div class="nav-links">
+                <a href="#problem">Product</a>
+                <a href="#departments">Departments</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#testimonials">Customers</a>
+                <a href="#">Docs</a>
+            </div>
+            <div class="nav-actions">
+                <a href="#" class="btn-ghost">Sign In</a>
+                <a href="#" class="btn-primary">Request Demo</a>
+                <button class="hamburger">☰</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="hero">
+        <div class="hero-bg-dots"></div>
+        <div class="container hero-content">
+            <div class="hero-text">
+                <span class="eyebrow">Enterprise AI Training Platform</span>
+                <h1>Train Every Team. Secure Every AI Interaction.</h1>
+                <p>Role-based AI safety training for every department. Audit-ready compliance in one platform.</p>
+                <div class="hero-actions">
+                    <a href="#" class="btn-primary" style="border-radius: 8px;">Get a Demo</a>
+                    <a href="#how-it-works" class="btn-ghost" style="padding: 0 16px;">See How It Works →</a>
+                </div>
+                <div class="social-proof">
+                    <span>Trusted by teams at —</span>
+                    <div class="social-proof-logos">
+                        <div class="logo-rect"></div>
+                        <div class="logo-rect"></div>
+                        <div class="logo-rect"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="dashboard-mockup">
+                    <div class="mockup-card">
+                        <div class="mockup-header">
+                            <span>Engineering Safety Track</span>
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--accent-blue)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9 12l2 2 4-4"></path></svg>
+                        </div>
+                        <p style="color:var(--text-secondary); margin-top:8px; font-size:14px;">92% complete</p>
+                        <div class="mockup-bar"><div class="mockup-fill"></div></div>
+                    </div>
+                    <!-- Overlapping 2nd card -->
+                    <div class="mockup-card" style="box-shadow: 0 16px 40px rgba(0,0,0,0.8);">
+                        <div style="display:flex; align-items:center; gap: 12px;">
+                            <div style="width: 40px; height: 40px; background: rgba(16,185,129,0.1); border-radius: 50%; display:flex; align-items:center; justify-content:center;">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--accent-green)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                            </div>
+                            <div>
+                                <h4 style="font-family: var(--font-body); font-weight: 500;">Certificate Earned</h4>
+                                <span style="font-size: 12px; color: var(--text-muted);">Just now</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- THE PROBLEM -->
+    <section id="problem">
+        <div class="container">
+            <div class="section-header">
+                <h2>Your teams are using AI.<br>Do they know how to do it safely?</h2>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" data-target="73">0</div>
+                    <div class="stat-desc">employees use AI without receiving security training or guidelines.</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">1 in 3</div>
+                    <div class="stat-desc">companies had an AI-related data incident or exposure this year.</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" data-target="89">0</div>
+                    <div class="stat-desc">compliance officers lack visibility into employee AI usage.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how-it-works" style="background-color: var(--bg-surface);">
+        <div class="container">
+            <div class="section-header">
+                <h2>The AI Risk Gap, Closed.</h2>
+                <p>Three steps to a fully compliant workforce.</p>
+            </div>
+            <div class="steps-container">
+                <div class="path-line"></div>
+                <div class="step-card">
+                    <div class="step-num">1</div>
+                    <h3 class="step-title">Assign by Department</h3>
+                    <p class="step-desc">Automatically map tailored curriculum to employee roles.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">2</div>
+                    <h3 class="step-title">Learn with Scenarios</h3>
+                    <p class="step-desc">Interactive, branching scenarios that mimic real-world decisions.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">3</div>
+                    <h3 class="step-title">Prove Compliance</h3>
+                    <p class="step-desc">Generate audit-ready reports and verified employee safety certificates.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DEPARTMENT TRACKS -->
+    <section id="departments">
+        <div class="container">
+            <div class="section-header">
+                <h2>Built for Every Team</h2>
+                <p>AI risk isn't one-size-fits-all. Training shouldn't be either.</p>
+            </div>
+            
+            <div class="dept-pills" id="dept-pills">
+                <button class="pill active" data-target="track-eng">Engineering</button>
+                <button class="pill" data-target="track-hr">HR</button>
+                <button class="pill" data-target="track-sales">Sales</button>
+                <button class="pill" data-target="track-finance">Finance</button>
+                <button class="pill" data-target="track-legal">Legal</button>
+            </div>
+
+            <div class="dept-content" id="dept-content">
+                <div class="dept-grid">
+                    <div>
+                        <h3 class="dept-title">Engineering Track</h3>
+                        <span style="display:inline-block; padding: 4px 10px; background: rgba(255,255,255,0.1); border-radius: 4px; font-size:12px; margin-bottom: 24px;">⏱ 45 mins</span>
+                        <ul class="dept-topics">
+                            <li>• Secure Coding with AI Assistants (Copilot, Cursor)</li>
+                            <li>• Data scrubbing and preventing IP leakage</li>
+                            <li>• Auditing AI-generated logic for vulnerabilities</li>
+                        </ul>
+                    </div>
+                    <div class="dept-quote">
+                        "Your team is using an LLM to debug a production database issue. Do they know what logs are safe to share?"
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURE BENTO GRID -->
+    <section id="features" style="background-color: var(--bg-surface);">
+        <div class="container">
+            <div class="section-header">
+                <h2>Platform Capabilities</h2>
+            </div>
+            <div class="bento-grid">
+                <!-- Large Card 1 -->
+                <div class="bento-card bento-large">
+                    <div>
+                        <svg class="bento-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3v12M18 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM18 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path><path d="M6 15h6a6 6 0 0 0 6-6V9"></path></svg>
+                        <h3 class="bento-title">Interactive Scenarios</h3>
+                        <p class="bento-desc">Move beyond videos. Branching decision trees test true judgment in context.</p>
+                    </div>
+                </div>
+                <!-- Small Card 1 -->
+                <div class="bento-card">
+                    <h3 class="bento-title">Cheat Sheets</h3>
+                    <p class="bento-desc">Actionable takeaways and safe-prompt templates users can save.</p>
+                </div>
+                <!-- Small Card 2 -->
+                <div class="bento-card">
+                    <h3 class="bento-title">SSO Integration</h3>
+                    <p class="bento-desc">Seamless login with Okta, Google, and Microsoft Entra.</p>
+                </div>
+                <!-- Large Card 2 -->
+                <div class="bento-card bento-large">
+                    <div>
+                        <svg class="bento-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                        <h3 class="bento-title">Audit-Ready Reports</h3>
+                        <p class="bento-desc">Instant export for SOC2, ISO 27001, and internal board meetings.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section id="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2>What compliance teams say</h2>
+            </div>
+            <div class="reviews-grid">
+                <div class="review-card">
+                    <p class="quote">"Before AISafe, our AI policy was just a PDF nobody read. Now we have measurable proof that our workforce is acting securely."</p>
+                    <div class="author-name">Sarah Jenkins</div>
+                    <div class="author-title">CISO, FinTech Corp</div>
+                </div>
+                <div class="review-card">
+                    <p class="quote">"The engineering scenarios are incredibly realistic. The team actually enjoyed the training because it respected their intelligence."</p>
+                    <div class="author-name">David Chen</div>
+                    <div class="author-title">VP Engineering, Series B Startup</div>
+                </div>
+                <div class="review-card">
+                    <p class="quote">"Getting our ISO certification was seamless thanks to the reporting capabilities. It's truly enterprise-grade."</p>
+                    <div class="author-name">Maria Rodriguez</div>
+                    <div class="author-title">Head of Compliance, Global Retail</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRICING -->
+    <section id="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2>Simple, transparent pricing</h2>
+            </div>
+            <div class="pricing-grid">
+                <!-- Starter -->
+                <div class="pricing-card">
+                    <h3 class="plan-name">Starter</h3>
+                    <p class="plan-desc">For small teams building their first AI policy.</p>
+                    <div class="price">$15<span>/user/mo</span></div>
+                    <ul class="features-list">
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Basic General Training</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Standard Reporting</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Email Support</li>
+                    </ul>
+                    <button class="btn-outline" style="width: 100%;">Get Started</button>
+                </div>
+                <!-- Professional -->
+                <div class="pricing-card popular">
+                    <div class="badge-popular">Most Popular</div>
+                    <h3 class="plan-name">Professional</h3>
+                    <p class="plan-desc">For companies seeking department-level compliance.</p>
+                    <div class="price">$29<span>/user/mo</span></div>
+                    <ul class="features-list">
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> All Role-Based Tracks</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Interactive Scenarios</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Audit-ready Exports</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> SSO Integration</li>
+                    </ul>
+                    <button class="btn-primary" style="width: 100%;">Start Free Trial</button>
+                </div>
+                <!-- Enterprise -->
+                <div class="pricing-card">
+                    <h3 class="plan-name">Enterprise</h3>
+                    <p class="plan-desc">For large organizations with complex needs.</p>
+                    <div class="price">Custom</div>
+                    <ul class="features-list">
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Custom Scenarios</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Unlimited Departments</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Dedicated Success Mgr</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> On-premise Options</li>
+                    </ul>
+                    <button class="btn-outline" style="width: 100%;">Contact Sales</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="final-cta" id="cta">
+        <div class="container">
+            <h2>Ready to close your AI risk gap?</h2>
+            <button class="btn-primary" style="padding: 0 40px; font-size: 18px; transform: scale(1.05);">Book a Demo</button>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="var(--accent-blue)" stroke-width="2.5" style="vertical-align: middle; margin-right:8px;">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        AISafe
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 14px; max-width: 250px;">
+                        Enterprise AI training & compliance platform. Secure every interaction.
+                    </p>
+                </div>
+                <div class="footer-col">
+                    <h4>Platform</h4>
+                    <ul>
+                        <li><a href="#">Capabilities</a></li>
+                        <li><a href="#">Departments</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">SSO & Security</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Customers</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">AI Safety Guide</a></li>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">Help Center</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Security</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="trust-badges">
+                    <span>✓ SOC2 Ready</span>
+                    <span>✓ ISO 27001</span>
+                    <span>✓ GDPR Compliant</span>
+                </div>
+                <div style="color: var(--text-muted); font-size: 14px;">
+                    © 2026 AISafe. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- INTERACTION SCRIPTS -->
+    <script>
+        // 1. Navbar Scroll Effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 80) {
+                navbar.classList.add('nav-scrolled');
+            } else {
+                navbar.classList.add('nav-scrolled'); 
+                navbar.classList.remove('nav-scrolled'); // Force redraw logic
+                if (window.scrollY > 80) navbar.classList.add('nav-scrolled');
+                else navbar.classList.remove('nav-scrolled');
+            }
+        });
+        
+        // Ensure initial state check
+        if (window.scrollY > 80) { navbar.classList.add('nav-scrolled'); }
+
+        // 2. Stat Counter Animation
+        const statElements = document.querySelectorAll('.stat-number[data-target]');
+        const observerOptions = { threshold: 0.5 };
+        
+        const statObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    const target = parseInt(el.getAttribute('data-target'));
+                    let count = 0;
+                    const duration = 1500; // ms
+                    const increment = target / (duration / 16); // 60fps
+                    
+                    const timer = setInterval(() => {
+                        count += increment;
+                        if (count >= target) {
+                            el.textContent = target + "%";
+                            clearInterval(timer);
+                        } else {
+                            el.textContent = Math.floor(count) + "%";
+                        }
+                    }, 16);
+                    
+                    observer.unobserve(el);
+                }
+            });
+        }, observerOptions);
+        
+        statElements.forEach(el => statObserver.observe(el));
+
+        // 3. Department Pills Switcher
+        const pills = document.querySelectorAll('.pill');
+        const deptContent = document.getElementById('dept-content');
+        
+        const deptData = {
+            'track-eng': {
+                title: 'Engineering Track',
+                time: '45 mins',
+                topics: [
+                    '• Secure Coding with AI Assistants (Copilot, Cursor)',
+                    '• Data scrubbing and preventing IP leakage',
+                    '• Auditing AI-generated logic for vulnerabilities'
+                ],
+                quote: '"Your team is using an LLM to debug a production database issue. Do they know what logs are safe to share?"'
+            },
+            'track-hr': {
+                title: 'HR & People Track',
+                time: '35 mins',
+                topics: [
+                    '• AI in recruitment & bias prevention',
+                    '• Drafting sensitive communications safely',
+                    '• Legal implications of AI candidate screening'
+                ],
+                quote: '"An employee uses ChatGPT to rewrite a termination letter. Are you confident no PII was exposed?"'
+            },
+            'track-sales': {
+                title: 'Sales & Marketing Track',
+                time: '30 mins',
+                topics: [
+                    '• Safe generation of client proposals',
+                    '• AI hallucination checks for marketing copy',
+                    '• Avoiding copyright infringement'
+                ],
+                quote: '"A SDR generates a cold email sequence using proprietary client data. How do you prevent that data from training future models?"'
+            },
+            'track-finance': {
+                title: 'Finance Track',
+                time: '40 mins',
+                topics: [
+                    '• Financial modeling and AI hallucinations',
+                    '• Market analysis data hygiene',
+                    '• Regulatory compliance in automated reporting'
+                ],
+                quote: '"A forecasting model is accelerated using an external LLM. Has your quarterly financial data just become public domain?"'
+            },
+            'track-legal': {
+                title: 'Legal & Compliance Track',
+                time: '50 mins',
+                topics: [
+                    '• Contract review and confidentiality',
+                    '• Privilege waiver risks in LLMs',
+                    '• IP ownership of AI-generated work'
+                ],
+                quote: '"Your legal team runs an NDA through a public AI to summarize it quickly. What was just breached?"'
+            }
+        };
+
+        pills.forEach(pill => {
+            pill.addEventListener('click', (e) => {
+                // Update active pill
+                pills.forEach(p => p.classList.remove('active'));
+                const current = e.target;
+                current.classList.add('active');
+                
+                // Fetch data
+                const targetKey = current.getAttribute('data-target');
+                const data = deptData[targetKey];
+                
+                if (data) {
+                    // Fade out
+                    deptContent.style.opacity = '0';
+                    deptContent.style.transform = 'translateY(10px)';
+                    
+                    setTimeout(() => {
+                        deptContent.innerHTML = `
+                            <div class="dept-grid">
+                                <div>
+                                    <h3 class="dept-title">${data.title}</h3>
+                                    <span style="display:inline-block; padding: 4px 10px; background: rgba(255,255,255,0.1); border-radius: 4px; font-size:12px; margin-bottom: 24px;">⏱ ${data.time}</span>
+                                    <ul class="dept-topics">
+                                        ${data.topics.map(t => `<li>${t}</li>`).join('')}
+                                    </ul>
+                                </div>
+                                <div class="dept-quote">
+                                    ${data.quote}
+                                </div>
+                            </div>
+                        `;
+                        // Fade in
+                        deptContent.style.opacity = '1';
+                        deptContent.style.transform = 'translateY(0)';
+                    }, 200); // Wait for fade out
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 3: Safe Prompt Patterns — AISafe</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Sora:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            /* Colors */
+            --bg-primary: #0A0A0F;
+            --bg-surface: #111118;
+            --bg-elevated: #18181F;
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-default: rgba(255, 255, 255, 0.10);
+            --border-strong: rgba(255, 255, 255, 0.20);
+            --text-primary: #F4F4F5;
+            --text-secondary: #A1A1AA;
+            --text-muted: #52525B;
+
+            --accent-blue: #3B82F6;
+            --accent-blue-hover: #2563EB;
+            --accent-blue-tint: rgba(59, 130, 246, 0.12);
+            --accent-green: #10B981;
+            --accent-green-tint: rgba(16, 185, 129, 0.12);
+            --accent-amber: #F59E0B;
+            --accent-amber-tint: rgba(245, 158, 11, 0.12);
+            --accent-red: #EF4444;
+            --accent-red-tint: rgba(239, 68, 68, 0.12);
+
+            /* Typography */
+            --font-display: 'Sora', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+
+            /* Spacing & Radii */
+            --rad-base: 8px;
+            --rad-card: 12px;
+            --rad-pill: 9999px;
+
+            /* Motion */
+            --ease-fast: 150ms ease;
+            --ease-slow: 350ms cubic-bezier(0, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 15px;
+            line-height: 1.5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: var(--font-display);
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            transition: all var(--ease-fast);
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .flex-col {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .justify-center {
+            justify-content: center;
+        }
+
+        .gap-8 {
+            gap: 8px;
+        }
+
+        .gap-12 {
+            gap: 12px;
+        }
+
+        .gap-16 {
+            gap: 16px;
+        }
+
+        .gap-24 {
+            gap: 24px;
+        }
+
+        .text-muted {
+            color: var(--text-muted);
+        }
+
+        .text-secondary {
+            color: var(--text-secondary);
+        }
+
+        /* DEV STATE TOGGLES (Fixed Top) */
+        .dev-toggles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 32px;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-strong);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 11px;
+        }
+
+        .dev-toggles button {
+            color: var(--text-secondary);
+            padding: 4px 12px;
+            border-radius: 4px;
+            border: 1px solid var(--border-default);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        .dev-toggles button:hover {
+            color: white;
+            border-color: white;
+        }
+
+        .dev-toggles button.active {
+            background: var(--accent-blue);
+            color: white;
+            border-color: var(--accent-blue);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: var(--accent-blue);
+            color: white;
+            padding: 0 24px;
+            height: 44px;
+            border-radius: var(--rad-base);
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--accent-blue-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-ghost {
+            color: var(--text-secondary);
+            padding: 0 16px;
+            height: 44px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            border-radius: var(--rad-base);
+        }
+
+        .btn-ghost:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-outline {
+            border: 1px solid var(--border-strong);
+            color: var(--text-primary);
+            padding: 0 16px;
+            height: 44px;
+            border-radius: var(--rad-base);
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            padding: 4px 12px;
+            border-radius: var(--rad-pill);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-amber {
+            background: var(--accent-amber-tint);
+            color: var(--accent-amber);
+        }
+
+        /* ===== STICKY TOP RAIL ===== */
+        .top-rail {
+            height: 64px;
+            border-bottom: 1px solid var(--border-subtle);
+            background: var(--bg-surface);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            margin-top: 32px;
+            /* Account for dev toggles */
+            position: relative;
+            z-index: 100;
+        }
+
+        .rail-left {
+            width: 200px;
+        }
+
+        .back-link {
+            color: var(--text-muted);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .back-link:hover {
+            color: var(--text-primary);
+        }
+
+        .rail-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .rail-title {
+            font-family: var(--font-display);
+            font-size: 14px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .rail-title span {
+            color: var(--text-muted);
+            font-weight: 400;
+            font-family: var(--font-body);
+            margin-left: 8px;
+        }
+
+        .progress-segments {
+            display: flex;
+            gap: 4px;
+            width: 240px;
+        }
+
+        .segment {
+            height: 4px;
+            flex: 1;
+            background: var(--bg-elevated);
+            border-radius: 2px;
+            transition: background var(--ease-slow);
+        }
+
+        .segment.complete {
+            background: var(--accent-blue);
+        }
+
+        .segment.current {
+            background: var(--accent-blue);
+            position: relative;
+        }
+
+        .segment.current::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: white;
+            border-radius: 2px;
+            animation: pulse-op 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse-op {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .rail-right {
+            width: 200px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-family: var(--font-mono);
+        }
+
+        /* ===== MAIN LAYOUT ===== */
+        .main-workspace {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ===== CONTENT PANEL (LEFT) ===== */
+        .content-panel {
+            width: 65%;
+            height: 100%;
+            overflow-y: auto;
+            position: relative;
+            background: var(--bg-primary);
+        }
+
+        /* View Container */
+        .view-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 48px 40px 120px;
+            display: none;
+            opacity: 0;
+            transform: translateX(20px);
+            animation: slideIn var(--ease-slow) forwards;
+        }
+
+        .view-container.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* -- STATE 1: VIDEO -- */
+        .video-wrapper {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-default);
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+        }
+
+        .video-placeholder-play {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            backdrop-filter: blur(4px);
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .video-wrapper:hover .video-placeholder-play {
+            transform: scale(1.1);
+            background: rgba(59, 130, 246, 0.8);
+        }
+
+        /* Fake Video Controls */
+        .v-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 48px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 16px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .video-wrapper:hover .v-controls {
+            opacity: 1;
+        }
+
+        .v-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .v-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 45%;
+            background: var(--accent-blue);
+            border-radius: 2px;
+        }
+
+        .v-time {
+            color: white;
+            font-family: var(--font-mono);
+            font-size: 12px;
+        }
+
+        .takeaways-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-default);
+            border-radius: var(--rad-card);
+            padding: 24px;
+            margin-top: 32px;
+            border-top: 3px solid var(--accent-blue);
+        }
+
+        .takeaways-card ul {
+            margin-top: 16px;
+            margin-bottom: 24px;
+        }
+
+        .takeaways-card li {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+        }
+
+        .takeaways-card li svg {
+            color: var(--accent-blue);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* -- STATE 2: SCENARIO -- */
+        .scenario-box {
+            background: var(--bg-elevated);
+            border-left: 3px solid var(--accent-blue);
+            border-radius: 0 var(--rad-base) var(--rad-base) 0;
+            padding: 24px;
+            margin: 24px 0 32px 0;
+        }
+
+        .scenario-label {
+            color: var(--text-secondary);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .scenario-text {
+            font-size: 18px;
+            line-height: 1.6;
+            font-family: var(--font-display);
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .opt-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-default);
+            border-radius: var(--rad-base);
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: all var(--ease-fast);
+            min-height: 64px;
+        }
+
+        .opt-card:hover:not(.submitted) {
+            border-color: var(--accent-blue);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .opt-letter {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-strong);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: all var(--ease-fast);
+            flex-shrink: 0;
+        }
+
+        .opt-text {
+            color: var(--text-primary);
+        }
+
+        /* Scenario Selection States */
+        .opt-card.selected {
+            border-color: var(--accent-blue);
+            background: var(--accent-blue-tint);
+        }
+
+        .opt-card.selected .opt-letter {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: white;
+        }
+
+        /* Post-Submit Details Area (Hidden initially) */
+        .feedback-area {
+            display: none;
+            padding: 20px;
+            border-radius: var(--rad-base);
+            margin-top: 0;
+            animation: slideDown 0.3s ease forwards;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .opt-card.is-correct {
+            border-color: var(--accent-green);
+            background: var(--accent-green-tint);
+            pointer-events: none;
+        }
+
+        .opt-card.is-correct .opt-letter {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+            color: white;
+        }
+
+        .opt-card.is-incorrect {
+            border-color: var(--accent-red);
+            background: var(--accent-red-tint);
+            pointer-events: none;
+        }
+
+        .opt-card.is-incorrect .opt-letter {
+            background: var(--accent-red);
+            border-color: var(--accent-red);
+            color: white;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 32.5%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--accent-green);
+            color: white;
+            padding: 8px 16px;
+            border-radius: var(--rad-pill);
+            font-family: var(--font-display);
+            font-weight: 600;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        @keyframes toastUp {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+
+            10% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+
+            90% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-10px);
+            }
+        }
+
+        /* -- STATE 3: DO / DON'T -- */
+        .split-card {
+            display: flex;
+            border-radius: var(--rad-card);
+            overflow: hidden;
+            margin-top: 32px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .half {
+            flex: 1;
+            padding: 32px;
+            position: relative;
+        }
+
+        .half-do {
+            background: var(--accent-green-tint);
+            border-right: 1px solid var(--border-subtle);
+        }
+
+        .half-dont {
+            background: var(--accent-red-tint);
+        }
+
+        .half h3 {
+            font-size: 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .half-do h3 {
+            color: var(--accent-green);
+        }
+
+        .half-dont h3 {
+            color: var(--accent-red);
+        }
+
+        .half ul li {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            font-size: 15px;
+            color: var(--text-primary);
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        /* Stagger animation class added via JS */
+        .stagger-in {
+            animation: slideUpFade 0.4s ease forwards;
+        }
+
+        @keyframes slideUpFade {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .icon-check {
+            color: var(--accent-green);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .icon-cross {
+            color: var(--accent-red);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* -- STATE 4: QUIZ -- */
+        .quiz-container {
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        .quiz-indicator {
+            color: var(--text-muted);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .quiz-dots {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 32px;
+        }
+
+        .q-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--bg-elevated);
+        }
+
+        .q-dot.done {
+            background: var(--accent-blue);
+        }
+
+        .q-dot.active {
+            background: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+
+        .quiz-question {
+            font-size: 22px;
+            line-height: 1.5;
+            font-family: var(--font-display);
+            margin-bottom: 32px;
+        }
+
+        .quiz-result {
+            text-align: center;
+            padding-top: 48px;
+            display: none;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid var(--accent-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            color: var(--accent-green);
+            font-size: 32px;
+            font-family: var(--font-display);
+            font-weight: 700;
+            background: var(--accent-green-tint);
+        }
+
+        /* ===== OUTLINE PANEL (RIGHT) ===== */
+        .outline-panel {
+            width: 35%;
+            background: var(--bg-surface);
+            border-left: 1px solid var(--border-subtle);
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        .outline-header {
+            color: var(--text-secondary);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            border-radius: var(--rad-base);
+            border: 1px solid transparent;
+            transition: all var(--ease-fast);
+        }
+
+        .step-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .step-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-elevated);
+            color: var(--text-muted);
+        }
+
+        .step-name {
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .step-time {
+            color: var(--text-muted);
+            font-size: 13px;
+            font-family: var(--font-mono);
+        }
+
+        /* Outline States */
+        .step-item.is-past {
+            opacity: 0.7;
+        }
+
+        .step-item.is-past .step-icon {
+            background: var(--accent-green-tint);
+            color: var(--accent-green);
+        }
+
+        .step-item.is-past .step-name {
+            color: var(--text-secondary);
+            text-decoration: line-through;
+            text-decoration-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .step-item.is-current {
+            background: var(--accent-blue-tint);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .step-item.is-current .step-icon {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .step-item.is-current .step-name {
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .here-badge {
+            background: var(--accent-blue);
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-left: 8px;
+        }
+
+        /* ===== STICKY BOTTOM NAV ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 65%;
+            height: 80px;
+            background: rgba(10, 10, 15, 0.9);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            z-index: 100;
+        }
+
+        .nav-progress {
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- DEV CONTROL TABS -->
+    <div class="dev-toggles">
+        <button onclick="switchState('state-1')" class="active" id="btn-state-1">1: Video</button>
+        <button onclick="switchState('state-2')" id="btn-state-2">2: Scenario</button>
+        <button onclick="switchState('state-3')" id="btn-state-3">3: Do/Don't</button>
+        <button onclick="switchState('state-4')" id="btn-state-4">4: Quiz</button>
+    </div>
+
+    <!-- TOP PROGRESS RAIL -->
+    <header class="top-rail">
+        <div class="rail-left">
+            <a href="#" class="back-link">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Dashboard
+            </a>
+        </div>
+        <div class="rail-center">
+            <div class="rail-title">Module 3: Safe Prompt Patterns <span>Lesson 3 of 6</span></div>
+            <div class="progress-segments">
+                <!-- Controlled by JS based on state -->
+                <div class="segment complete"></div>
+                <div class="segment complete"></div>
+                <div class="segment current" id="seg-current"></div>
+                <div class="segment"></div>
+                <div class="segment"></div>
+                <div class="segment"></div>
+            </div>
+        </div>
+        <div class="rail-right">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            12 min left
+        </div>
+    </header>
+
+    <main class="main-workspace">
+
+        <!-- ================= CONTENT PANEL (LEFT) ================= -->
+        <div class="content-panel" id="content-scroll">
+
+            <!-- STATE 1: VIDEO LESSON -->
+            <div id="state-1" class="view-container active">
+                <span class="badge badge-amber mb-16"
+                    style="background:var(--bg-elevated); color:var(--text-secondary)">Step 2 of 6 — Core Content</span>
+
+                <div class="video-wrapper">
+                    <div class="video-placeholder-play">
+                        <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor" style="margin-left: 4px;">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                    </div>
+                    <div class="v-controls">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="white">
+                            <rect x="6" y="4" width="4" height="16"></rect>
+                            <rect x="14" y="4" width="4" height="16"></rect>
+                        </svg>
+                        <div class="v-bar">
+                            <div class="v-fill"></div>
+                        </div>
+                        <div class="v-time">2:34 / 5:12</div>
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="2">
+                            <path d="M11 5L6 9H2v6h4l5 4V5z"></path>
+                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                        </svg>
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="2">
+                            <path
+                                d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+
+                <h2>Anatomy of a Safe Prompt</h2>
+                <p class="text-secondary" style="font-size: 16px; margin-top: 8px;">Learn how to instruct LLMs to
+                    process information without supplying them with raw confidential data.</p>
+
+                <div class="takeaways-card">
+                    <h4>Key Takeaways</h4>
+                    <ul>
+                        <li><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> Always assume input might be used for training context.</li>
+                        <li><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> Replace names and IDs with abstract placeholders (e.g. [CLIENT_A]).</li>
+                        <li><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> Ask the model to generate the template, you fill in the sensitive data locally.</li>
+                    </ul>
+                    <button class="btn-primary" style="width: 100%; justify-content: center;">Mark Complete & Continue
+                        →</button>
+                </div>
+            </div>
+
+            <!-- STATE 2: INTERACTIVE SCENARIO -->
+            <div id="state-2" class="view-container">
+                <span class="badge badge-amber mb-16">What Would You Do?</span>
+
+                <div class="scenario-box">
+                    <div class="scenario-label"><svg viewBox="0 0 24 24" width="16" height="16" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg> Scenario context</div>
+                    <p class="scenario-text">Your colleague Sarah copies client financial data from a secure database
+                        and pastes it into standard ChatGPT to create a quick executive summary. She asks you to review
+                        the summary before she sends it to leadership. What do you do?</p>
+                </div>
+
+                <div class="options-grid" id="scenario-options">
+                    <div class="opt-card" onclick="selectOption(this)">
+                        <div class="opt-letter">A</div>
+                        <div class="opt-text">Review the summary for accuracy and approve it. It saves time.</div>
+                    </div>
+                    <div class="opt-card" onclick="selectOption(this)" data-correct="true">
+                        <div class="opt-letter">B</div>
+                        <div class="opt-text">Tell Sarah this is a data breach. Instruct her to delete the chat history
+                            immediately and report it to Compliance.</div>
+                    </div>
+                    <div class="opt-card" onclick="selectOption(this)">
+                        <div class="opt-letter">C</div>
+                        <div class="opt-text">Ask Sarah to edit the output to remove any specific client names before
+                            sending.</div>
+                    </div>
+                    <div class="opt-card" onclick="selectOption(this)">
+                        <div class="opt-letter">D</div>
+                        <div class="opt-text">Switch to your own enterprise-approved AI tool and regenerate the summary
+                            there.</div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-16">
+                    <button class="btn-primary" id="btn-submit-scenario" disabled onclick="submitScenario()">Submit
+                        Answer</button>
+                    <span class="text-muted" id="scenario-hint" style="opacity:0; transition:opacity 0.2s;">Select an
+                        option above</span>
+                </div>
+
+                <!-- Feedback Area -->
+                <div id="scenario-feedback" class="feedback-area">
+                    <h4 id="fb-heading" style="margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                        Feedback</h4>
+                    <p id="fb-text" class="text-secondary" style="line-height: 1.6;"></p>
+                </div>
+
+                <div id="toast" class="toast">+10 points!</div>
+            </div>
+
+            <!-- STATE 3: DO / DON'T -->
+            <div id="state-3" class="view-container">
+                <span class="badge mb-16" style="background:var(--bg-elevated); color:var(--text-secondary)">Step 4 of 6
+                    — Cheatsheet</span>
+                <h2>Data Handling Rules</h2>
+                <p class="text-secondary" style="margin-top: 8px;">A quick reference guide for your daily workflow.</p>
+
+                <div class="split-card">
+                    <div class="half half-do">
+                        <h3><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> DO</h3>
+                        <ul id="do-list">
+                            <li><svg class="icon-check" viewBox="0 0 24 24" width="18" height="18" fill="none"
+                                    stroke="currentColor" stroke-width="3">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg> Use approved Enterprise LLM instances when handling internal documents.</li>
+                            <li><svg class="icon-check" viewBox="0 0 24 24" width="18" height="18" fill="none"
+                                    stroke="currentColor" stroke-width="3">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg> Obfuscate PII and financial numbers before pasting into any external tool.</li>
+                            <li><svg class="icon-check" viewBox="0 0 24 24" width="18" height="18" fill="none"
+                                    stroke="currentColor" stroke-width="3">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg> Ask AI to generate structural templates, then fill in sensitive data manually.
+                            </li>
+                            <li><svg class="icon-check" viewBox="0 0 24 24" width="18" height="18" fill="none"
+                                    stroke="currentColor" stroke-width="3">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg> Fact-check numerical outputs against the source document.</li>
+                        </ul>
+                    </div>
+                    <div class="half half-dont">
+                        <h3><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg> DON'T</h3>
+                        <ul id="dont-list">
+                            <li><svg class="icon-cross" viewBox="0 0 24 24" width="18" height="18" fill="none"
+                                    stroke="currentColor" stroke-width="3">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg> Paste confidential client proposals into public consumer AI tools.</li>
+                            <li><svg class="icon-cross" viewBox="0 0 24 24" width="18" height="18" fill="none"
+                                    stroke="currentColor" stroke-width="3">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg> Upload proprietary source code without explicit CTO department approval.</li>
+                            <li><svg class="icon-cross" viewBox="0 0 24 24" width="18" height="18" fill="none"
+                                    stroke="currentColor" stroke-width="3">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg> Rely on AI to accurately summarize legal liability clauses.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-16" style="margin-top: 32px;">
+                    <button class="btn-outline">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Save Cheat Sheet
+                    </button>
+                    <a href="#" class="text-blue" style="font-weight: 500; font-size: 14px;">View All Resources →</a>
+                </div>
+            </div>
+
+            <!-- STATE 4: KNOWLEDGE CHECK -->
+            <div id="state-4" class="view-container">
+                <div class="quiz-container" id="quiz-question-view">
+                    <div class="quiz-indicator">Knowledge Check</div>
+                    <div class="quiz-dots">
+                        <div class="q-dot done"></div>
+                        <div class="q-dot active"></div>
+                        <div class="q-dot"></div>
+                    </div>
+
+                    <div class="quiz-question">Question 2: If a third-party application requests access to your
+                        organization's Google Drive via API to provide "AI analysis", what is the FIRST step you should
+                        take?</div>
+
+                    <div class="options-grid" id="quiz-options">
+                        <div class="opt-card" onclick="selectQuiz(this)">
+                            <div class="opt-text" style="padding-left: 8px;">A. Grant access if the application has a 4+
+                                star rating.</div>
+                        </div>
+                        <div class="opt-card" onclick="selectQuiz(this)">
+                            <div class="opt-text" style="padding-left: 8px;">B. Check if the tool is listed on the IT
+                                Approved Software directory before authenticating.</div>
+                        </div>
+                        <div class="opt-card" onclick="selectQuiz(this)">
+                            <div class="opt-text" style="padding-left: 8px;">C. Grant access temporarily and revoke it
+                                after use.</div>
+                        </div>
+                    </div>
+
+                    <button class="btn-primary mt-16" id="btn-quiz-next" disabled onclick="showQuizResult()"
+                        style="margin-top: 16px;">Next Question →</button>
+                </div>
+
+                <div class="quiz-container quiz-result" id="quiz-result-view">
+                    <div class="score-circle">3/3</div>
+                    <div
+                        style="font-size: 18px; color: var(--accent-green); font-weight: 600; margin-bottom: 8px; display:flex; align-items:center; justify-content:center; gap:8px;">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
+                            stroke-width="3">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg> Perfect Score!
+                    </div>
+                    <p class="text-secondary" style="margin-bottom: 32px;">You've demonstrated a strong understanding of
+                        Safe Prompt Patterns.</p>
+                    <button class="btn-primary">Complete Module <svg viewBox="0 0 24 24" width="16" height="16"
+                            fill="none" stroke="currentColor" stroke-width="2" style="margin-left:8px;">
+                            <path d="M5 12h14M12 5l7 7-7 7"></path>
+                        </svg></button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ================= OUTLINE PANEL (RIGHT) ================= -->
+        <div class="outline-panel">
+            <div class="outline-header">In This Module</div>
+
+            <div class="step-list">
+                <div class="step-item is-past" id="nav-1">
+                    <div class="step-left">
+                        <div class="step-icon">✓</div>
+                        <div class="step-name">1. Hook: The Data Risk</div>
+                    </div>
+                    <div class="step-time">0:45</div>
+                </div>
+
+                <!-- Dynamic active state via JS based on dev toggles -->
+                <div class="step-item is-current" id="nav-2">
+                    <div class="step-left">
+                        <div class="step-icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                            </svg></div>
+                        <div class="step-name flex items-center">2. Safe Prompt Patterns <span class="here-badge">You
+                                are here</span></div>
+                    </div>
+                    <div class="step-time">2:34</div>
+                </div>
+
+                <div class="step-item" id="nav-3">
+                    <div class="step-left">
+                        <div class="step-icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="18" r="3"></circle>
+                                <circle cx="6" cy="6" r="3"></circle>
+                                <circle cx="18" cy="6" r="3"></circle>
+                                <path d="M18 9v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V9"></path>
+                                <path d="M12 12v3"></path>
+                            </svg></div>
+                        <div class="step-name">3. Interactive Scenario</div>
+                    </div>
+                    <div class="step-time">3:00</div>
+                </div>
+
+                <div class="step-item" id="nav-4">
+                    <div class="step-left">
+                        <div class="step-icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                                <polyline points="2 17 12 22 22 17"></polyline>
+                                <polyline points="2 12 12 17 22 12"></polyline>
+                            </svg></div>
+                        <div class="step-name">4. Do's and Don'ts</div>
+                    </div>
+                </div>
+
+                <div class="step-item" id="nav-5">
+                    <div class="step-left">
+                        <div class="step-icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg></div>
+                        <div class="step-name">5. Knowledge Check</div>
+                    </div>
+                    <div class="step-time">3 Qs</div>
+                </div>
+
+                <div class="step-item" id="nav-6">
+                    <div class="step-left">
+                        <div class="step-icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg></div>
+                        <div class="step-name">6. Course Resources</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- STICKY BOTTOM NAV -->
+    <div class="bottom-nav">
+        <button class="btn-ghost">← Previous Step</button>
+        <div class="nav-progress" id="b-nav-text">Step 2 of 6</div>
+        <button class="btn-primary" id="btn-bottom-next" disabled>Next: Scenario →</button>
+    </div>
+
+    <!-- SCRIPTS FOR INTERACTIONS -->
+    <script>
+        // DEV SWITCHER: Handles switching between the 4 UI states requested
+        function switchState(stateId) {
+            // Hide all views
+            document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
+            document.getElementById(stateId).classList.add('active');
+
+            // Update Toggles
+            document.querySelectorAll('.dev-toggles button').forEach(b => b.classList.remove('active'));
+            document.getElementById(`btn-${stateId}`).classList.add('active');
+
+            // Re-trigger animations by cloning/replacing node for Do/Dont
+            if (stateId === 'state-3') {
+                const doItems = document.querySelectorAll('#do-list li');
+                const dontItems = document.querySelectorAll('#dont-list li');
+
+                doItems.forEach((li, i) => {
+                    li.classList.remove('stagger-in');
+                    void li.offsetWidth; // trigger reflow
+                    li.style.animationDelay = `${i * 100}ms`;
+                    li.classList.add('stagger-in');
+                });
+                dontItems.forEach((li, i) => {
+                    li.classList.remove('stagger-in');
+                    void li.offsetWidth;
+                    li.style.animationDelay = `${(i + 2) * 100}ms`;
+                    li.classList.add('stagger-in');
+                });
+            }
+
+            // Sync outline panel and bottom nav
+            const stepMapping = {
+                'state-1': { navIdx: 2, title: 'Step 2 of 6', next: 'Next: Scenario' },
+                'state-2': { navIdx: 3, title: 'Step 3 of 6', next: 'Next: Cheat Sheet' },
+                'state-3': { navIdx: 4, title: 'Step 4 of 6', next: 'Next: Knowledge Check' },
+                'state-4': { navIdx: 5, title: 'Step 5 of 6', next: 'Finish Module' }
+            };
+
+            const mapping = stepMapping[stateId];
+
+            // Update Outline styles
+            document.querySelectorAll('.step-item').forEach((item, idx) => {
+                item.className = 'step-item';
+                // Reset internal icon dom if it was changed
+                if (idx + 1 < mapping.navIdx) {
+                    item.classList.add('is-past');
+                    item.querySelector('.step-icon').innerHTML = '✓';
+                } else if (idx + 1 === mapping.navIdx) {
+                    item.classList.add('is-current');
+                    if (!item.querySelector('.here-badge')) {
+                        item.querySelector('.step-name').innerHTML += ' <span class="here-badge">You are here</span>';
+                    }
+                } else {
+                    const badge = item.querySelector('.here-badge');
+                    if (badge) badge.remove();
+                }
+            });
+
+            // Update Bottom Nav
+            document.getElementById('b-nav-text').textContent = mapping.title;
+            const btnNext = document.getElementById('btn-bottom-next');
+            btnNext.innerHTML = `${mapping.next} →`;
+
+            // Logic for enabling 'Next' depending on state
+            if (stateId === 'state-2' && !document.querySelector('#state-2 .opt-card.is-correct')) {
+                btnNext.disabled = true;
+            } else if (stateId === 'state-4') {
+                btnNext.disabled = document.getElementById('quiz-result-view').style.display !== 'block';
+            } else {
+                btnNext.disabled = false;
+            }
+
+            // Reset scroll
+            document.getElementById('content-scroll').scrollTop = 0;
+        }
+
+        // SCENARIO LOGIC (State 2)
+        let scenarioSubmitted = false;
+        function selectOption(el) {
+            if (scenarioSubmitted) return;
+
+            document.querySelectorAll('#scenario-options .opt-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+
+            const btn = document.getElementById('btn-submit-scenario');
+            btn.disabled = false;
+            document.getElementById('scenario-hint').style.opacity = '1';
+        }
+
+        function submitScenario() {
+            scenarioSubmitted = true;
+            const selected = document.querySelector('#scenario-options .opt-card.selected');
+            const isCorrect = selected.getAttribute('data-correct') === "true";
+
+            const fbArea = document.getElementById('scenario-feedback');
+            const fbHeading = document.getElementById('fb-heading');
+            const fbText = document.getElementById('fb-text');
+            const toast = document.getElementById('toast');
+
+            document.getElementById('btn-submit-scenario').style.display = 'none';
+            document.getElementById('scenario-hint').style.display = 'none';
+
+            if (isCorrect) {
+                selected.classList.add('is-correct');
+                fbArea.style.background = 'var(--accent-green-tint)';
+                fbArea.style.borderLeft = '4px solid var(--accent-green)';
+                fbHeading.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--accent-green)" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> <span style="color:var(--accent-green);">Correct!</span>';
+                fbText.innerHTML = "You identified the data breach immediately. Pasting confidential data into public LLMs exposes the company to severe regulatory fines and loss of client trust. The tool retains this data for training.";
+                fbArea.style.display = 'block';
+
+                toast.style.animation = 'toastUp 2.5s forwards';
+                document.getElementById('btn-bottom-next').disabled = false;
+            } else {
+                selected.classList.add('is-incorrect');
+                fbArea.style.background = 'var(--accent-red-tint)';
+                fbArea.style.borderLeft = '4px solid var(--accent-red)';
+                fbHeading.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--accent-red)" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> <span style="color:var(--accent-red);">Not quite.</span>';
+                fbText.innerHTML = "While reviewing is good, the data breach has ALREADY occurred the moment Sarah pasted the financial data into a public LLM. The correct action is to mandate immediate deletion and report the incident.";
+                fbArea.style.display = 'block';
+
+                // Allow them to retry to see success state
+                setTimeout(() => {
+                    scenarioSubmitted = false;
+                    selected.classList.remove('selected', 'is-incorrect');
+                    fbArea.style.display = 'none';
+                    document.getElementById('btn-submit-scenario').style.display = 'inline-flex';
+                    document.getElementById('btn-submit-scenario').disabled = true;
+                    document.getElementById('scenario-hint').style.display = 'inline-block';
+                    document.getElementById('scenario-hint').style.opacity = '0';
+                }, 4000);
+            }
+        }
+
+        // QUIZ LOGIC (State 4)
+        function selectQuiz(el) {
+            document.querySelectorAll('#quiz-options .opt-card').forEach(c => c.classList.remove('selected', 'is-correct'));
+            el.classList.add('selected');
+            document.getElementById('btn-quiz-next').disabled = false;
+        }
+
+        function showQuizResult() {
+            // Fake animation transition to results
+            const selected = document.querySelector('#quiz-options .opt-card.selected');
+            selected.classList.add('is-correct'); // simulate correct choice
+
+            setTimeout(() => {
+                document.getElementById('quiz-question-view').style.display = 'none';
+                document.getElementById('quiz-result-view').style.display = 'block';
+                document.getElementById('btn-bottom-next').disabled = false;
+            }, 800);
+        }
+
+    </script>
+</body>
+
+</html>

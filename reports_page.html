@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports & Audit Export — AISafe Admin</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Sora:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            /* Colors */
+            --bg-base: #0A0A0F;
+            --bg-surface: #111118;
+            --bg-elevated: #18181F;
+            --bg-panel: #0E0E14;
+
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-default: rgba(255, 255, 255, 0.10);
+            --border-strong: rgba(255, 255, 255, 0.20);
+
+            --text-primary: #F4F4F5;
+            --text-secondary: #A1A1AA;
+            --text-muted: #52525B;
+
+            --accent-blue: #3B82F6;
+            --accent-blue-hover: #2563EB;
+            --accent-blue-tint: rgba(59, 130, 246, 0.12);
+            --accent-green: #10B981;
+            --accent-amber: #F59E0B;
+            --accent-red: #EF4444;
+
+            /* Typography */
+            --font-display: 'Sora', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            /* Motion */
+            --ease-fast: 150ms ease;
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+            /* Layout */
+            --sidebar-width: 280px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 14px;
+            line-height: 1.5;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: var(--font-display);
+            font-weight: 600;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            transition: all var(--ease-fast);
+        }
+
+        input,
+        select {
+            font-family: inherit;
+            background: transparent;
+            border: none;
+            color: inherit;
+            outline: none;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .flex-col {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .gap-4 {
+            gap: 4px;
+        }
+
+        .gap-8 {
+            gap: 8px;
+        }
+
+        .gap-12 {
+            gap: 12px;
+        }
+
+        .gap-16 {
+            gap: 16px;
+        }
+
+        .gap-24 {
+            gap: 24px;
+        }
+
+        .text-muted {
+            color: var(--text-muted);
+        }
+
+        .text-secondary {
+            color: var(--text-secondary);
+        }
+
+        .font-mono {
+            font-family: var(--font-mono);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .badge-green {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-green);
+        }
+
+        .badge-amber {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--accent-amber);
+        }
+
+        .badge-red {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--accent-red);
+        }
+
+        .badge-ghost {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-default);
+            color: var(--text-secondary);
+        }
+
+        .badge-gold {
+            background: rgba(201, 168, 76, 0.15);
+            color: #C9A84C;
+            border: 1px solid rgba(201, 168, 76, 0.3);
+        }
+
+        /* Buttons */
+        .btn {
+            height: 36px;
+            padding: 0 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-blue-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            border: 1px solid var(--border-strong);
+            color: var(--text-primary);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: white;
+        }
+
+        .btn-ghost {
+            color: var(--text-secondary);
+        }
+
+        .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        .checkbox {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            border: 1px solid var(--border-strong);
+            background: var(--bg-surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+
+        .checkbox.checked {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+
+        .checkbox svg {
+            opacity: 0;
+            width: 12px;
+            height: 12px;
+            color: white;
+        }
+
+        .checkbox.checked svg {
+            opacity: 1;
+        }
+
+        .cb-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+
+        /* ================= SIDEBAR (TEMPLATES) ================= */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-panel);
+            border-right: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .nav-back {
+            padding: 24px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .nav-back:hover {
+            color: white;
+        }
+
+        .sb-header {
+            padding: 24px 24px 16px;
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .rep-group {
+            margin-bottom: 24px;
+        }
+
+        .rg-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            font-weight: 600;
+            padding: 0 24px;
+            margin-bottom: 8px;
+        }
+
+        .rl-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .rl-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 24px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.1s;
+            border-left: 2px solid transparent;
+        }
+
+        .rl-item:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.02);
+            border-left-color: var(--border-strong);
+        }
+
+        .rl-item.active {
+            color: var(--accent-blue);
+            background: var(--accent-blue-tint);
+            border-left-color: var(--accent-blue);
+            font-weight: 500;
+        }
+
+        .rl-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .rl-format {
+            font-size: 11px;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+        }
+
+        .rl-item.active .rl-format {
+            color: rgba(59, 130, 246, 0.7);
+        }
+
+        /* ================= MAIN AREA ================= */
+        .main-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background: var(--bg-base);
+            scroll-behavior: smooth;
+        }
+
+        /* Header */
+        .page-header {
+            padding: 32px 48px;
+            border-bottom: 1px solid var(--border-subtle);
+            background: var(--bg-surface);
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+
+        .breadcrumb {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .bc-link:hover {
+            color: var(--text-secondary);
+        }
+
+        .header-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .title-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Content Body */
+        .content-body {
+            padding: 32px 48px 120px;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        /* Filter Card */
+        .panel-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .pc-title {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .param-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .fg-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .input-box {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-default);
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-size: 14px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            transition: border-color 0.2s;
+        }
+
+        .input-box:focus-within {
+            border-color: var(--accent-blue);
+        }
+
+        .preset-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .btn-preset {
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-default);
+            color: var(--text-secondary);
+        }
+
+        .btn-preset:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        .btn-preset.active {
+            background: var(--text-primary);
+            color: var(--bg-base);
+            border-color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .multi-col-checks {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .chip-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .chip {
+            padding: 6px 16px;
+            border-radius: 999px;
+            font-size: 13px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-strong);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chip.active {
+            background: var(--accent-blue-tint);
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-subtle);
+            margin-top: 16px;
+        }
+
+        /* Table Preview */
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 16px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .data-table th {
+            padding: 12px 16px;
+            color: var(--text-muted);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-strong);
+            background: var(--bg-base);
+        }
+
+        .data-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-subtle);
+            vertical-align: middle;
+        }
+
+        .data-row {
+            background: var(--bg-surface);
+            transition: background 0.1s;
+        }
+
+        .data-row:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .data-row.warning {
+            border-left: 3px solid var(--accent-amber);
+        }
+
+        .data-row.danger {
+            border-left: 3px solid var(--accent-red);
+        }
+
+        .data-row.total-row {
+            background: var(--bg-base);
+            font-weight: 600;
+            border-top: 2px solid var(--border-strong);
+        }
+
+        .data-row.total-row:hover {
+            background: var(--bg-base);
+        }
+
+        /* Report Footer */
+        .report-footer {
+            background: var(--bg-elevated);
+            padding: 12px 24px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            border-top: 1px solid var(--border-subtle);
+            border-radius: 0 0 12px 12px;
+            text-align: center;
+        }
+
+        /* Export Section */
+        .export-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .fmt-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-default);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fmt-card:hover {
+            border-color: var(--border-strong);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .fmt-card.selected {
+            border-width: 2px;
+            border-color: var(--accent-blue);
+            background: var(--accent-blue-tint);
+        }
+
+        .fmt-icon {
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+        }
+
+        .fmt-card.selected .fmt-icon {
+            color: var(--accent-blue);
+        }
+
+        .fmt-title {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .fmt-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .exp-options {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: y-16px x-24px;
+            row-gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .btn-generate {
+            width: 100%;
+            height: 52px;
+            background: var(--accent-blue);
+            color: white;
+            border-radius: 12px;
+            font-family: var(--font-display);
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s;
+        }
+
+        .btn-generate:hover {
+            background: var(--accent-blue-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Loading/Success States */
+        .btn-generate.loading {
+            background: var(--bg-surface);
+            border: 1px solid var(--accent-blue);
+            color: var(--text-primary);
+            box-shadow: none;
+            pointer-events: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .prog-bg {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background: rgba(59, 130, 246, 0.15);
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .btn-generate.success {
+            background: var(--accent-green);
+            color: white;
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+            pointer-events: none;
+        }
+
+        /* Evidence Trail */
+        .evidence-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-default);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 72px;
+        }
+
+        /* Collapsed state */
+        .evidence-card.open {
+            max-height: 800px;
+            border-color: var(--border-strong);
+        }
+
+        .ev-header {
+            padding: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .ev-header:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .chevron {
+            transition: transform 0.3s;
+        }
+
+        .evidence-card.open .chevron {
+            transform: rotate(180deg);
+        }
+
+        .ev-body {
+            padding: 0 24px 24px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .evidence-card.open .ev-body {
+            opacity: 1;
+            transition-delay: 0.1s;
+        }
+
+        .ev-tabs {
+            display: flex;
+            gap: 24px;
+            border-bottom: 1px solid var(--border-subtle);
+            margin-bottom: 24px;
+        }
+
+        .ev-tab {
+            padding-bottom: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-size: 13px;
+        }
+
+        .ev-tab.active {
+            color: white;
+            border-bottom-color: white;
+        }
+
+        /* Schedule Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-sheet {
+            width: 100%;
+            max-width: 540px;
+            background: var(--bg-surface);
+            border-radius: 20px 20px 0 0;
+            border: 1px solid var(--border-subtle);
+            border-bottom: none;
+            transform: translateY(100%);
+            transition: transform 0.35s var(--ease-spring);
+            display: flex;
+            flex-direction: column;
+            padding: 32px;
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-overlay.active .modal-sheet {
+            transform: translateY(0);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 12px;
+            background: var(--bg-elevated);
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid var(--border-default);
+            width: fit-content;
+        }
+
+        .radio-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .radio-btn.active {
+            background: var(--bg-surface);
+            color: white;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .token-input {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-default);
+            border-radius: 8px;
+            padding: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            min-height: 48px;
+            width: 100%;
+        }
+
+        .email-token {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 8px 4px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .token-rm {
+            cursor: pointer;
+            opacity: 0.6;
+        }
+
+        .token-rm:hover {
+            opacity: 1;
+        }
+
+        .ti-field {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            flex: 1;
+            min-width: 120px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- LEFT PANEL: TEMPLATES -->
+    <aside class="sidebar">
+        <a href="#" class="nav-back">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Back to Dashboard
+        </a>
+
+        <div class="sb-header">Report Templates</div>
+
+        <div class="rep-group">
+            <div class="rg-title">Completion</div>
+            <div class="rl-list">
+                <div class="rl-item">
+                    <div class="rl-name">📊 Company Summary</div>
+                    <div class="rl-format">CSV+PDF</div>
+                </div>
+                <div class="rl-item active">
+                    <div class="rl-name">🏢 Dept. Breakdown</div>
+                    <div class="rl-format">CSV+PDF</div>
+                </div>
+                <div class="rl-item">
+                    <div class="rl-name">👤 Individual User</div>
+                    <div class="rl-format">CSV</div>
+                </div>
+                <div class="rl-item">
+                    <div class="rl-name">⚠️ Overdue Users</div>
+                    <div class="rl-format">CSV+PDF</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="rep-group">
+            <div class="rg-title">Assessment</div>
+            <div class="rl-list">
+                <div class="rl-item">
+                    <div class="rl-name">📈 Score Distribution</div>
+                    <div class="rl-format">CSV+PDF</div>
+                </div>
+                <div class="rl-item">
+                    <div class="rl-name">❌ Question Failure</div>
+                    <div class="rl-format">CSV</div>
+                </div>
+                <div class="rl-item">
+                    <div class="rl-name">🔄 Retake History</div>
+                    <div class="rl-format">CSV</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="rep-group">
+            <div class="rg-title">Compliance / Audit</div>
+            <div class="rl-list">
+                <div class="rl-item">
+                    <div class="rl-name">✅ Policy Ack. Log</div>
+                    <div class="rl-format">PDF</div>
+                </div>
+                <div class="rl-item">
+                    <div class="rl-name">🏆 Certificate Trail</div>
+                    <div class="rl-format">PDF</div>
+                </div>
+                <div class="rl-item">
+                    <div class="rl-name">📋 Content Version Log</div>
+                    <div class="rl-format">CSV</div>
+                </div>
+                <div class="rl-item">
+                    <div class="rl-name">📦 Full Audit Export</div>
+                    <div class="rl-format"><span class="badge badge-gold"
+                            style="font-size: 9px; padding: 2px 6px;">Audit-Ready</span> ZIP</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="rep-group">
+            <div class="rg-title">Custom</div>
+            <div class="rl-list">
+                <div class="rl-item" style="color: var(--accent-blue);">
+                    <div class="rl-name">➕ Build Custom Report</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN AREA -->
+    <main class="main-area">
+
+        <header class="page-header">
+            <div class="breadcrumb">
+                <a href="#" class="bc-link">Reports</a> /
+                <a href="#" class="bc-link">Completion</a> /
+                <span class="text-primary">Department Breakdown</span>
+            </div>
+
+            <div class="header-main">
+                <div class="title-area">
+                    <h1 style="font-size: 24px;">Department Completion Breakdown</h1>
+                    <button class="btn-ghost" style="padding: 4px; height:auto;"><svg viewBox="0 0 24 24" width="16"
+                            height="16" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 20h9"></path>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                        </svg></button>
+                </div>
+
+                <div class="flex gap-12">
+                    <button class="btn btn-ghost" onclick="openScheduleModal()">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        Schedule Report
+                    </button>
+                    <!-- Scroll to export section -->
+                    <a href="#export-section" class="btn btn-primary" style="text-decoration: none;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Generate Export
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <div class="content-body">
+
+            <!-- Filter Card -->
+            <div class="panel-card">
+                <div class="pc-title">Report Parameters</div>
+
+                <div class="param-grid">
+                    <div>
+                        <div class="field-group">
+                            <div class="fg-label">Date Range</div>
+                            <div class="flex gap-8 items-center">
+                                <div class="input-box">
+                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none"
+                                        stroke="var(--text-muted)" stroke-width="2">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                    <input type="text" value="Jan 1, 2026" style="width: 100%;">
+                                </div>
+                                <span class="text-muted">to</span>
+                                <div class="input-box">
+                                    <input type="text" value="Mar 4, 2026" style="width: 100%;">
+                                </div>
+                            </div>
+                            <div class="preset-row">
+                                <button class="btn-preset">7D</button>
+                                <button class="btn-preset">30D</button>
+                                <button class="btn-preset active">Quarter</button>
+                                <button class="btn-preset">Year</button>
+                                <button class="btn-preset">Custom</button>
+                            </div>
+                        </div>
+
+                        <div class="field-group mt-16" style="margin-top: 24px;">
+                            <div class="fg-label">Training Tracks</div>
+                            <div class="chip-group">
+                                <div class="chip active">All Tracks</div>
+                                <div class="chip">Core Onboarding</div>
+                                <div class="chip">Role-Based</div>
+                                <div class="chip">Annual Refreshers</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="field-group">
+                            <div class="fg-label flex justify-between">
+                                Departments
+                                <button class="btn-ghost" style="height: auto; padding:0; font-size:12px;">Deselect
+                                    All</button>
+                            </div>
+                            <div class="multi-col-checks">
+                                <label class="cb-label">
+                                    <div class="checkbox checked"><svg viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="3">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg></div> Engineering (142)
+                                </label>
+                                <label class="cb-label">
+                                    <div class="checkbox checked"><svg viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="3">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg> HR (18)
+                                </label>
+                                <label class="cb-label">
+                                    <div class="checkbox checked"><svg viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="3">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg> Sales (94)
+                                </label>
+                                <label class="cb-label">
+                                    <div class="checkbox checked"><svg viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="3">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg> Finance (32)
+                                </label>
+                                <label class="cb-label">
+                                    <div class="checkbox checked"><svg viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="3">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg> Legal (12)
+                                </label>
+                                <label class="cb-label">
+                                    <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="3">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg></div> <span class="text-muted">Ext. Contractors (45)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="field-group" style="margin-top: 24px;">
+                            <div class="fg-label">Include Metrics</div>
+                            <div class="chip-group">
+                                <div class="chip active">Completion %</div>
+                                <div class="chip active">Avg Scores</div>
+                                <div class="chip">Time Spent</div>
+                                <div class="chip active">Cert Status</div>
+                                <div class="chip">Policy Ack</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-outline" style="border-color:transparent;" onclick="shimmerTable()">↺ Reset
+                        Options</button>
+                    <button class="btn btn-outline" onclick="shimmerTable()">Apply Filters</button>
+                </div>
+            </div>
+
+            <!-- Preview Data -->
+            <div>
+                <div class="preview-header">
+                    <div>
+                        <h2 style="font-size: 16px; margin-bottom: 4px;">Data Preview</h2>
+                        <span class="text-secondary" style="font-size: 13px;">Showing 5 of 5 selected departments. Full
+                            export includes all raw records.</span>
+                    </div>
+                    <button class="btn btn-ghost" style="height: 32px; font-size: 13px;" onclick="shimmerTable()">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <polyline points="1 20 1 14 7 14"></polyline>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                        </svg> Refresh Data
+                    </button>
+                </div>
+
+                <div
+                    style="border: 1px solid var(--border-subtle); border-radius: 12px 12px 0 0; overflow: hidden; border-bottom: none;">
+                    <table class="data-table" id="preview-table">
+                        <thead>
+                            <tr>
+                                <th>Department</th>
+                                <th>Assigned</th>
+                                <th>Completed</th>
+                                <th>In Progress</th>
+                                <th>Not Started</th>
+                                <th>Avg Score</th>
+                                <th>Compl. %</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody style="transition: opacity 0.2s;">
+                            <tr class="data-row">
+                                <td style="font-weight: 500;">Engineering</td>
+                                <td>142</td>
+                                <td>120</td>
+                                <td>18</td>
+                                <td>4</td>
+                                <td class="font-mono">92%</td>
+                                <td class="font-mono">84.5%</td>
+                                <td><span class="badge badge-green">On Track</span></td>
+                            </tr>
+                            <tr class="data-row">
+                                <td style="font-weight: 500;">HR</td>
+                                <td>18</td>
+                                <td>17</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td class="font-mono">95%</td>
+                                <td class="font-mono">94.4%</td>
+                                <td><span class="badge badge-green">On Track</span></td>
+                            </tr>
+                            <tr class="data-row warning">
+                                <td style="font-weight: 500;">Sales</td>
+                                <td>94</td>
+                                <td>45</td>
+                                <td>30</td>
+                                <td class="text-amber font-mono" style="font-weight:600;">19</td>
+                                <td class="font-mono">75%</td>
+                                <td class="font-mono text-amber">47.8%</td>
+                                <td><span class="badge badge-amber">At Risk</span></td>
+                            </tr>
+                            <tr class="data-row">
+                                <td style="font-weight: 500;">Finance</td>
+                                <td>32</td>
+                                <td>28</td>
+                                <td>4</td>
+                                <td>0</td>
+                                <td class="font-mono">88%</td>
+                                <td class="font-mono">87.5%</td>
+                                <td><span class="badge badge-green">On Track</span></td>
+                            </tr>
+                            <tr class="data-row danger">
+                                <td style="font-weight: 500;">Legal</td>
+                                <td>12</td>
+                                <td>3</td>
+                                <td>2</td>
+                                <td class="text-red font-mono" style="font-weight:600;">7</td>
+                                <td class="font-mono">82%</td>
+                                <td class="font-mono text-red">25.0%</td>
+                                <td><span class="badge badge-red">Critical</span></td>
+                            </tr>
+                            <tr class="data-row total-row">
+                                <td>TOTAL / AVG</td>
+                                <td>298</td>
+                                <td>213</td>
+                                <td>55</td>
+                                <td>30</td>
+                                <td class="font-mono">86.4%</td>
+                                <td class="font-mono">71.4%</td>
+                                <td>--</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Report metadata footer -->
+                <div class="report-footer">
+                    <span>Generated by: admin@acme.com</span>
+                    <span style="opacity: 0.5;">|</span>
+                    <span>March 4, 2026 14:32 UTC</span>
+                    <span style="opacity: 0.5;">|</span>
+                    <span>AISafe v2.1</span>
+                    <span style="opacity: 0.5;">|</span>
+                    <span>Tenant: Acme Corp</span>
+                </div>
+            </div>
+
+            <!-- Export Generation Section -->
+            <div id="export-section" style="scroll-margin-top: 100px; padding-top: 16px;">
+                <h2 style="font-size: 20px; font-family: var(--font-display); margin-bottom: 24px;">Export Full Report
+                </h2>
+
+                <div class="export-cards">
+                    <div class="fmt-card" onclick="selectFormat(this)">
+                        <svg class="fmt-icon" viewBox="0 0 24 24" width="32" height="32" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="8" y1="13" x2="16" y2="13"></line>
+                            <line x1="8" y1="17" x2="16" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        <div class="fmt-title">CSV Dataset</div>
+                        <div class="fmt-desc">Raw data table suitable for Excel, Sheets, or custom BI tool ingestion.
+                        </div>
+                    </div>
+
+                    <div class="fmt-card selected" onclick="selectFormat(this)">
+                        <svg class="fmt-icon" viewBox="0 0 24 24" width="32" height="32" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <path d="M16 13H8"></path>
+                            <path d="M16 17H8"></path>
+                            <path d="M10 9H8"></path>
+                        </svg>
+                        <div class="fmt-title">PDF Document</div>
+                        <div class="fmt-desc">Formatted, branded, audit-ready document with charts and summaries.</div>
+                        <div style="position:absolute; top:12px; right:12px; color:var(--accent-blue);"><svg
+                                viewBox="0 0 24 24" width="18" height="18" fill="currentColor" stroke="none">
+                                <path
+                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                                </path>
+                            </svg></div>
+                    </div>
+
+                    <div class="fmt-card" onclick="selectFormat(this)">
+                        <svg class="fmt-icon" viewBox="0 0 24 24" width="32" height="32" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path
+                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                            </path>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        </svg>
+                        <div class="fmt-title">Both (ZIP archive)</div>
+                        <div class="fmt-desc">Contains both CSV raw data and the formatted PDF presentation.</div>
+                    </div>
+                </div>
+
+                <div class="exp-options">
+                    <label class="cb-label">
+                        <div class="checkbox checked"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg></div> Include company logo (Acme Corp)
+                    </label>
+                    <label class="cb-label">
+                        <div class="checkbox checked"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> Include generation metadata & timestamps
+                    </label>
+                    <label class="cb-label">
+                        <div class="checkbox checked"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> Include executive summary page
+                    </label>
+                    <label class="cb-label">
+                        <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg></div> Add administrative signature line
+                    </label>
+                    <label class="cb-label">
+                        <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg></div> Add "CONFIDENTIAL" watermark
+                    </label>
+                </div>
+
+                <button class="btn-generate" id="generate-btn" onclick="startGeneration()">
+                    Generate & Download PDF
+                </button>
+            </div>
+
+            <!-- Evidence / Audit Trail Collapsible -->
+            <div class="evidence-card" id="evidence-panel">
+                <div class="ev-header" onclick="toggleEvidence()">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--text-secondary)"
+                            stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        <div>
+                            <div style="font-weight: 600; font-family: var(--font-display);">Evidence Trail — Compliance
+                                Data</div>
+                            <div class="text-secondary" style="font-size: 12px; margin-top: 2px;">Immutable system logs
+                                backing this report</div>
+                        </div>
+                    </div>
+                    <svg class="chevron" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+
+                <div class="ev-body">
+                    <div class="ev-tabs">
+                        <div class="ev-tab active">Policy Acknowledgements</div>
+                        <div class="ev-tab">Content Versions</div>
+                        <div class="ev-tab">Completion Timestamps</div>
+                    </div>
+
+                    <div
+                        style="background: rgba(16,185,129,0.05); border: 1px solid rgba(16,185,129,0.2); padding: 12px 16px; border-radius: 8px; display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="var(--accent-green)" stroke="none">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            <path d="M12 8v4l3 3" stroke="white" stroke-width="2" stroke-linecap="round"></path>
+                        </svg>
+                        <span style="font-size: 12px; color: var(--accent-green);">All records shown are immutable and
+                            cryptographically signed at the time of creation.</span>
+                    </div>
+
+                    <table class="data-table"
+                        style="background: var(--bg-elevated); border-radius: 8px; overflow: hidden; font-family: var(--font-mono); font-size: 11px;">
+                        <thead>
+                            <tr style="background: rgba(0,0,0,0.2);">
+                                <th style="border-bottom:none;">Timestamp (UTC)</th>
+                                <th style="border-bottom:none;">User ID</th>
+                                <th style="border-bottom:none;">Action</th>
+                                <th style="border-bottom:none;">Policy Ver.</th>
+                                <th style="border-bottom:none;">Hash</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2026-03-04 10:15:22</td>
+                                <td class="text-secondary">usr_8f72a9</td>
+                                <td>ACK_ACCEPT</td>
+                                <td>v2.1_CORE</td>
+                                <td class="text-secondary" style="letter-spacing: -0.5px;">a7f8...9b12</td>
+                            </tr>
+                            <tr>
+                                <td>2026-03-03 16:42:01</td>
+                                <td class="text-secondary">usr_1b44c2</td>
+                                <td>ACK_ACCEPT</td>
+                                <td>v2.1_CORE</td>
+                                <td class="text-secondary" style="letter-spacing: -0.5px;">c9d2...4a8f</td>
+                            </tr>
+                            <tr>
+                                <td>2026-03-03 09:11:54</td>
+                                <td class="text-secondary">usr_9e33d1</td>
+                                <td>ACK_ACCEPT</td>
+                                <td>v2.1_CORE</td>
+                                <td class="text-secondary" style="letter-spacing: -0.5px;">f1e5...7c3d</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="margin-top: 24px; display: flex; justify-content: flex-end;">
+                        <button class="btn btn-outline" style="font-size: 13px; height: 32px;">Export Evidence Package
+                            (ZIP)</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- SCHEDULE MODAL -->
+    <div class="modal-overlay" id="schedule-modal" onclick="closeScheduleModal(event)">
+        <div class="modal-sheet">
+            <h2 style="font-size: 20px; margin-bottom: 24px;">Schedule Report</h2>
+
+            <div class="field-group" style="margin-bottom: 20px;">
+                <div class="fg-label">Frequency</div>
+                <div class="radio-group">
+                    <div class="radio-btn">Daily</div>
+                    <div class="radio-btn active">Weekly</div>
+                    <div class="radio-btn">Monthly</div>
+                </div>
+            </div>
+
+            <div class="field-group" style="margin-bottom: 20px;">
+                <div class="fg-label">Send on</div>
+                <select class="input-box" style="appearance: none;">
+                    <option>Monday at 08:00 AM</option>
+                    <option>Friday at 05:00 PM</option>
+                </select>
+            </div>
+
+            <div class="field-group" style="margin-bottom: 24px;">
+                <div class="fg-label">Recipients</div>
+                <div class="token-input">
+                    <div class="email-token">admin@acme.com <svg class="token-rm" viewBox="0 0 24 24" width="12"
+                            height="12" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg></div>
+                    <div class="email-token">compliance@acme.com <svg class="token-rm" viewBox="0 0 24 24" width="12"
+                            height="12" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg></div>
+                    <input type="text" class="ti-field" placeholder="Add email...">
+                </div>
+            </div>
+
+            <div class="field-group" style="margin-bottom: 32px;">
+                <div class="fg-label">Format Override</div>
+                <div class="radio-group">
+                    <div class="radio-btn active">Match Manual Export (PDF)</div>
+                    <div class="radio-btn">Force CSV only</div>
+                </div>
+            </div>
+
+            <div class="form-actions" style="margin-top: 0;">
+                <button class="btn btn-ghost" onclick="closeScheduleModal(null, true)">Cancel</button>
+                <button class="btn btn-primary">Create Schedule</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Checkboxes UI logic
+        document.querySelectorAll('.cb-label, .checkbox:not(.cb-label .checkbox)').forEach(el => {
+            el.addEventListener('click', function (e) {
+                e.preventDefault();
+                let cb = this.classList.contains('checkbox') ? this : this.querySelector('.checkbox');
+                if (cb) cb.classList.toggle('checked');
+            });
+        });
+
+        // Format Selection
+        function selectFormat(clickedCard) {
+            document.querySelectorAll('.fmt-card').forEach(c => {
+                c.classList.remove('selected');
+                const check = c.querySelector('div[style*="top:12px"]');
+                if (check) check.remove();
+            });
+
+            clickedCard.classList.add('selected');
+            clickedCard.innerHTML += `<div style="position:absolute; top:12px; right:12px; color:var(--accent-blue);"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" stroke="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg></div>`;
+
+            // Update button text
+            const title = clickedCard.querySelector('.fmt-title').textContent;
+            let format = "Data";
+            if (title.includes("PDF")) format = "PDF";
+            if (title.includes("CSV")) format = "CSV";
+            if (title.includes("ZIP")) format = "ZIP archive";
+
+            const btn = document.getElementById('generate-btn');
+            if (!btn.classList.contains('loading') && !btn.classList.contains('success')) {
+                btn.innerHTML = `Generate & Download ${format}`;
+            }
+        }
+
+        // Table Shimmer (fake loading)
+        function shimmerTable() {
+            const tbody = document.querySelector('#preview-table tbody');
+            tbody.style.opacity = '0.3';
+            setTimeout(() => {
+                tbody.style.opacity = '1';
+            }, 600);
+        }
+
+        // Generate Button Animation
+        function startGeneration() {
+            const btn = document.getElementById('generate-btn');
+            if (btn.classList.contains('loading') || btn.classList.contains('success')) return;
+
+            // Setup loading state
+            btn.classList.add('loading');
+            btn.innerHTML = `
+                <div class="prog-bg" id="prog-fill"></div>
+                <span style="position:relative; z-index:2; display:flex; align-items:center; gap:8px;">
+                    <svg style="animation: spin 1s linear infinite;" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+                    Preparing document... <span id="prog-txt" class="font-mono">0%</span>
+                </span>
+                <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
+            `;
+
+            const fill = document.getElementById('prog-fill');
+            const txt = document.getElementById('prog-txt');
+
+            let prog = 0;
+            const interval = setInterval(() => {
+                prog += Math.floor(Math.random() * 8) + 2;
+                if (prog >= 100) {
+                    prog = 100;
+                    clearInterval(interval);
+
+                    // Format success
+                    setTimeout(() => {
+                        btn.classList.remove('loading');
+                        btn.classList.add('success');
+                        btn.innerHTML = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Report ready — downloading...`;
+
+                        // Reset after 3s
+                        setTimeout(() => {
+                            btn.classList.remove('success');
+                            selectFormat(document.querySelector('.fmt-card.selected')); // resets text
+                        }, 3000);
+
+                    }, 200);
+                }
+                fill.style.width = `${prog}%`;
+                txt.textContent = `${prog}%`;
+            }, 100);
+        }
+
+        // Evidence Panel Collapse
+        function toggleEvidence() {
+            const panel = document.getElementById('evidence-panel');
+            panel.classList.toggle('open');
+            if (panel.classList.contains('open')) {
+                setTimeout(() => {
+                    panel.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                }, 350);
+            }
+        }
+
+        // Modal Logic
+        const scheduleModal = document.getElementById('schedule-modal');
+        function openScheduleModal() {
+            scheduleModal.classList.add('active');
+        }
+        function closeScheduleModal(event, force = false) {
+            if (force || event.target === scheduleModal) {
+                scheduleModal.classList.remove('active');
+            }
+        }
+
+        // Toggle presets
+        document.querySelectorAll('.btn-preset').forEach(b => {
+            b.addEventListener('click', function () {
+                document.querySelectorAll('.btn-preset').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                shimmerTable();
+            });
+        });
+
+        // Toggle chips
+        document.querySelectorAll('.chip').forEach(c => {
+            c.addEventListener('click', function () {
+                this.classList.toggle('active');
+            });
+        });
+
+        // Radio buttons in modal
+        document.querySelectorAll('.radio-group').forEach(group => {
+            const btns = group.querySelectorAll('.radio-btn');
+            btns.forEach(b => {
+                b.addEventListener('click', () => {
+                    btns.forEach(btn => btn.classList.remove('active'));
+                    b.classList.add('active');
+                });
+            });
+        });
+
+    </script>
+</body>
+
+</html>
