@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AISafe Prototypes Hub</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Sora:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #0A0A0F;
+            --bg-surface: #13131A;
+            --bg-elevated: #1C1C26;
+            --text-primary: #F4F4F5;
+            --text-secondary: #A1A1AA;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-default: rgba(255, 255, 255, 0.12);
+            --accent-blue: #3B82F6;
+            --accent-blue-tint: rgba(59, 130, 246, 0.12);
+            --font-display: 'Sora', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            margin: 0;
+            padding: 48px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        h1 {
+            font-family: var(--font-display);
+            font-size: 32px;
+            margin: 0 0 12px 0;
+            background: linear-gradient(90deg, #F4F4F5, #A1A1AA);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p {
+            color: var(--text-secondary);
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 24px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-blue);
+            background: var(--bg-elevated);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(59, 130, 246, 0.3);
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            background: var(--accent-blue-tint);
+            color: var(--accent-blue);
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .badge-admin {
+            background: rgba(16, 185, 129, 0.12);
+            color: #10B981;
+        }
+
+        .card-title {
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            padding-right: 60px;
+        }
+
+        .card-desc {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+
+        .card-footer {
+            margin-top: 24px;
+            display: flex;
+            align-items: center;
+            color: var(--accent-blue);
+            font-weight: 500;
+            font-size: 14px;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .card:hover .card-footer {
+            opacity: 1;
+        }
+
+        .card-footer svg {
+            margin-left: 8px;
+            transition: transform 0.2s;
+        }
+
+        .card:hover .card-footer svg {
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>AISafe Prototypes Hub</h1>
+            <p>Select any of the completed UI pages below to view the interactive prototype.</p>
+        </div>
+
+        <div class="grid">
+
+            <a href="marketing_page.html" class="card" target="_blank">
+                <div class="card-badge">Public</div>
+                <div class="card-title">1. Marketing Page</div>
+                <div class="card-desc">The landing page showcasing the brand, pricing, and main features to prospective
+                    clients.</div>
+                <div class="card-footer">View Prototype <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></div>
+            </a>
+
+            <a href="login_page.html" class="card" target="_blank">
+                <div class="card-badge">Public</div>
+                <div class="card-title">2. Login Page</div>
+                <div class="card-desc">Split-screen authentication experience featuring developer toggles for state
+                    previews.</div>
+                <div class="card-footer">View Prototype <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></div>
+            </a>
+
+            <a href="learner_dashboard.html" class="card" target="_blank">
+                <div class="card-badge">Learner</div>
+                <div class="card-title">3. Learner Dashboard</div>
+                <div class="card-desc">Main hub for trainees to view assignments, upcoming deadlines, and their current
+                    learning path.</div>
+                <div class="card-footer">View Prototype <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></div>
+            </a>
+
+            <a href="lesson_view.html" class="card" target="_blank">
+                <div class="card-badge">Learner</div>
+                <div class="card-title">4. Lesson / Module View</div>
+                <div class="card-desc">The primary course viewer with various interactive states: Video, Scenario,
+                    Do/Don't, and Quiz.</div>
+                <div class="card-footer">View Prototype <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></div>
+            </a>
+
+            <a href="assessment_page.html" class="card" target="_blank">
+                <div class="card-badge">Learner</div>
+                <div class="card-title">5. Final Assessment</div>
+                <div class="card-desc">Formal exam environment featuring a live countdown timer and interactive test
+                    states.</div>
+                <div class="card-footer">View Prototype <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></div>
+            </a>
+
+            <a href="resources_library.html" class="card" target="_blank">
+                <div class="card-badge">Learner</div>
+                <div class="card-title">6. Resources Library</div>
+                <div class="card-desc">A grid library of downloadable cheat sheets with an interactive overlay modal for
+                    previewing.</div>
+                <div class="card-footer">View Prototype <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></div>
+            </a>
+
+            <a href="certificates_page.html" class="card" target="_blank">
+                <div class="card-badge">Learner</div>
+                <div class="card-title">7. Certificates Hub</div>
+                <div class="card-desc">Showcases a pure CSS certificate renderer and interactive achievement badges.
+                </div>
+                <div class="card-footer">View Prototype <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></div>
+            </a>
+
+            <a href="admin_dashboard.html" class="card" target="_blank">
+                <div class="card-badge badge-admin">Admin</div>
+                <div class="card-title">8. Admin Dashboard</div>
+                <div class="card-desc">High-level compliance overview packed with Chart.js analytics and deep-dive
+                    capabilities.</div>
+                <div class="card-footer">View Prototype <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></div>
+            </a>
+
+            <a href="user_management.html" class="card" target="_blank">
+                <div class="card-badge badge-admin">Admin</div>
+                <div class="card-title">9. User Management</div>
+                <div class="card-desc">Admin tool for managing users with an interactive data table, drawer panels, and
+                    modals.</div>
+                <div class="card-footer">View Prototype <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></div>
+            </a>
+
+            <a href="reports_page.html" class="card" target="_blank">
+                <div class="card-badge badge-admin">Admin</div>
+                <div class="card-title">10. Reports & Exports</div>
+                <div class="card-desc">Complex parameter filters for generating audit-ready PDF and CSV compliance
+                    reports.</div>
+                <div class="card-footer">View Prototype <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></div>
+            </a>
+
+        </div>
+    </div>
+
+</body>
+
+</html>
